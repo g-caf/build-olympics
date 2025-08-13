@@ -8,7 +8,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #0a0a0a;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
     color: #ffffff;
     min-height: 100vh;
     overflow-x: hidden;
@@ -16,17 +16,29 @@ body {
     font-weight: 400;
 }
 
-.video-background {
+.animated-background {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    transform: translateX(-50%) translateY(-50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: -2;
-    object-fit: cover;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(45, 90, 61, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(74, 124, 89, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(26, 26, 46, 0.8) 0%, transparent 50%);
+    animation: backgroundPulse 20s ease-in-out infinite alternate;
+}
+
+@keyframes backgroundPulse {
+    0% {
+        transform: scale(1) rotate(0deg);
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        transform: scale(1.1) rotate(5deg);
+        filter: hue-rotate(20deg);
+    }
 }
 
 .video-overlay {
@@ -39,6 +51,92 @@ body {
         radial-gradient(ellipse at center, rgba(26, 26, 46, 0.8) 0%, rgba(15, 15, 26, 0.9) 50%, rgba(0, 0, 0, 0.95) 100%),
         linear-gradient(180deg, rgba(45, 90, 61, 0.05) 0%, rgba(0, 0, 0, 0.3) 100%);
     z-index: -1;
+}
+
+.spinning-logo {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.spinning-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: spookySpinner 15s linear infinite, pulse 4s ease-in-out infinite alternate;
+    filter: 
+        brightness(0) 
+        invert(1) 
+        sepia(1) 
+        hue-rotate(90deg) 
+        saturate(4) 
+        brightness(1.2)
+        drop-shadow(0 0 20px rgba(45, 90, 61, 0.6))
+        drop-shadow(0 0 40px rgba(45, 90, 61, 0.4))
+        drop-shadow(0 0 60px rgba(45, 90, 61, 0.2));
+}
+
+@keyframes spookySpinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(90deg) scale(1.1);
+    }
+    50% {
+        transform: rotate(180deg) scale(0.9);
+    }
+    75% {
+        transform: rotate(270deg) scale(1.05);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.05;
+        filter: 
+            brightness(0) 
+            invert(1) 
+            sepia(1) 
+            hue-rotate(90deg) 
+            saturate(4) 
+            brightness(1.2)
+            drop-shadow(0 0 20px rgba(45, 90, 61, 0.6))
+            drop-shadow(0 0 40px rgba(45, 90, 61, 0.4));
+    }
+    100% {
+        opacity: 0.12;
+        filter: 
+            brightness(0) 
+            invert(1) 
+            sepia(1) 
+            hue-rotate(90deg) 
+            saturate(5) 
+            brightness(1.4)
+            drop-shadow(0 0 30px rgba(45, 90, 61, 0.8))
+            drop-shadow(0 0 60px rgba(45, 90, 61, 0.6))
+            drop-shadow(0 0 90px rgba(45, 90, 61, 0.3));
+    }
+}
+
+@media (max-width: 768px) {
+    .spinning-logo {
+        top: 50%;
+        left: 50%;
+        width: 400px;
+        height: 400px;
+        transform: translate(-50%, -50%);
+        opacity: 0.06;
+    }
 }
 
 .container {
