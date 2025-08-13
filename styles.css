@@ -6,6 +6,14 @@
     box-sizing: border-box;
 }
 
+/* Green glow effect for text */
+.green-glow {
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: 
@@ -230,10 +238,14 @@ header {
 .subtitle {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 400;
+    font-weight: 500;
     color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.15em;
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
 }
 
 .event-info {
@@ -244,10 +256,14 @@ header {
 .event-date {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 400;
+    font-weight: 500;
     color: #4a7c59;
     margin-bottom: 0.5rem;
     letter-spacing: 0.05em;
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
 }
 
 .event-description {
@@ -280,28 +296,37 @@ header {
 
 .prize-amount {
     font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 600;
+    font-weight: 500;
     color: #4a7c59;
     text-shadow: 
-        0 0 20px rgba(45, 90, 61, 0.5),
-        0 0 40px rgba(45, 90, 61, 0.3);
+        0 0 15px rgba(74, 124, 89, 0.5),
+        0 0 30px rgba(74, 124, 89, 0.4),
+        0 0 60px rgba(74, 124, 89, 0.3);
     margin-bottom: 0.5rem;
 }
 
 .prize-label {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 400;
+    font-weight: 500;
     color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.2em;
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
 }
 
 .prize-subtitle {
     font-family: 'Inter', sans-serif;
     font-size: clamp(0.8rem, 2vw, 1rem);
-    font-weight: 400;
+    font-weight: 500;
     color: #4a7c59;
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
     margin-top: 0.5rem;
     letter-spacing: 0.05em;
 }
@@ -313,11 +338,15 @@ header {
 .countdown-container h2 {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1.5rem, 4vw, 2.5rem);
-    font-weight: 400;
+    font-weight: 500;
     margin-bottom: 2rem;
     color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
 }
 
 .countdown {
@@ -344,15 +373,21 @@ header {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 500;
     color: #4a7c59;
-    text-shadow: 0 0 10px rgba(45, 90, 61, 0.5);
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.5),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
 }
 
 .time-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    font-weight: 400;
+    font-weight: 500;
     color: #4a7c59;
     text-transform: uppercase;
+    text-shadow: 
+        0 0 8px rgba(74, 124, 89, 0.4),
+        0 0 15px rgba(74, 124, 89, 0.2);
     letter-spacing: 0.15em;
     margin-top: 0.5rem;
 }
@@ -381,10 +416,15 @@ header {
 
 .info-card h3 {
     font-size: 1.5rem;
+    font-weight: 500;
     margin-bottom: 1.5rem;
     color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    text-shadow: 
+        0 0 10px rgba(74, 124, 89, 0.4),
+        0 0 20px rgba(74, 124, 89, 0.3),
+        0 0 40px rgba(74, 124, 89, 0.2);
 }
 
 .info-card p {
