@@ -73,9 +73,10 @@ body {
     outline: none;
 }
 
-.spinning-logo svg {
+.spinning-logo img {
     width: 100%;
     height: 100%;
+    object-fit: contain;
     animation: verticalSpin 8s linear infinite, pulse 4s ease-in-out infinite alternate;
     transform-style: preserve-3d;
     filter: 
