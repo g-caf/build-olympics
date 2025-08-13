@@ -65,9 +65,9 @@ body {
     height: 1000px;
     transform: translate(-50%, -50%);
     z-index: -1;
-    opacity: 0.25;
+    opacity: 0.3;
     pointer-events: none;
-    perspective: 1000px;
+    perspective: 2000px;
     background: none;
     border: none;
     outline: none;
@@ -113,41 +113,43 @@ body {
 
 @keyframes verticalSpin {
     0% {
-        transform: rotateZ(0deg);
+        transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg);
     }
     25% {
-        transform: rotateZ(90deg);
+        transform: rotateY(90deg) rotateX(2deg) rotateZ(5deg);
     }
     50% {
-        transform: rotateZ(180deg);
+        transform: rotateY(180deg) rotateX(0deg) rotateZ(0deg);
     }
     75% {
-        transform: rotateZ(270deg);
+        transform: rotateY(270deg) rotateX(-2deg) rotateZ(-5deg);
     }
     100% {
-        transform: rotateZ(360deg);
+        transform: rotateY(360deg) rotateX(0deg) rotateZ(0deg);
     }
 }
 
 @keyframes pulse {
     0% {
-        opacity: 0.2;
+        opacity: 0.25;
         filter: 
             hue-rotate(90deg) 
-            saturate(1.5) 
-            brightness(1.0)
-            drop-shadow(0 0 20px rgba(0, 255, 65, 0.6))
-            drop-shadow(0 0 40px rgba(0, 255, 65, 0.4));
+            saturate(2) 
+            brightness(1.2)
+            drop-shadow(0 0 30px rgba(0, 255, 65, 0.8))
+            drop-shadow(0 0 60px rgba(0, 255, 65, 0.6))
+            drop-shadow(0 0 100px rgba(0, 255, 65, 0.4));
     }
     100% {
-        opacity: 0.35;
+        opacity: 0.4;
         filter: 
             hue-rotate(90deg) 
-            saturate(3) 
-            brightness(1.4)
-            drop-shadow(0 0 40px rgba(0, 255, 65, 0.9))
-            drop-shadow(0 0 80px rgba(0, 255, 65, 0.7))
-            drop-shadow(0 0 120px rgba(0, 255, 65, 0.5));
+            saturate(3.5) 
+            brightness(1.6)
+            drop-shadow(0 0 50px rgba(0, 255, 65, 1.0))
+            drop-shadow(0 0 100px rgba(0, 255, 65, 0.8))
+            drop-shadow(0 0 150px rgba(0, 255, 65, 0.6))
+            drop-shadow(0 0 200px rgba(0, 255, 65, 0.4));
     }
 }
 
