@@ -76,6 +76,7 @@ body {
     object-fit: contain;
     animation: verticalSpin 8s linear infinite, pulse 4s ease-in-out infinite alternate;
     transform-style: preserve-3d;
+    mix-blend-mode: screen;
     filter: 
         hue-rotate(90deg) 
         saturate(2) 
