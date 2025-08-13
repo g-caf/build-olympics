@@ -85,7 +85,7 @@ header {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
     font-weight: 300;
-    color: #cccccc;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.15em;
 }
@@ -155,7 +155,7 @@ header {
     font-family: 'Inter', sans-serif;
     font-size: clamp(0.8rem, 2vw, 1rem);
     font-weight: 300;
-    color: #999999;
+    color: #4a7c59;
     margin-top: 0.5rem;
     letter-spacing: 0.05em;
 }
@@ -169,7 +169,7 @@ header {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     font-weight: 300;
     margin-bottom: 2rem;
-    color: #cccccc;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
@@ -194,7 +194,7 @@ header {
 }
 
 .time-value {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 600;
     color: #4a7c59;
@@ -205,7 +205,7 @@ header {
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     font-weight: 400;
-    color: #cccccc;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     margin-top: 0.5rem;
@@ -267,15 +267,16 @@ header {
 }
 
 .cta-button {
+    font-family: 'Inter', sans-serif;
     background: linear-gradient(45deg, #2d5a3d, #4a7c59);
     color: #ffffff;
-    border: none;
+    border: 1px solid rgba(45, 90, 61, 0.3);
     padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    border-radius: 50px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(45, 90, 61, 0.3);
@@ -343,16 +344,21 @@ header {
     .signup-form {
         flex-direction: row;
         align-items: stretch;
+        gap: 0;
     }
     
     .email-input {
         flex: 1;
         border-radius: 8px 0 0 8px;
+        border-right: none;
     }
     
     .cta-button {
         border-radius: 0 8px 8px 0;
-        min-width: 150px;
+        min-width: 200px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
     }
 }
 
