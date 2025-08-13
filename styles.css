@@ -197,7 +197,7 @@ header {
 .title {
     font-family: 'Inter', sans-serif;
     font-size: clamp(3rem, 8vw, 8rem);
-    font-weight: 200;
+    font-weight: 400;
     color: #2d5a3d;
     margin-bottom: 1rem;
     letter-spacing: 0.15em;
@@ -226,7 +226,7 @@ header {
 .subtitle {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 300;
+    font-weight: 400;
     color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.15em;
@@ -240,7 +240,7 @@ header {
 .event-date {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 500;
+    font-weight: 400;
     color: #4a7c59;
     margin-bottom: 0.5rem;
     letter-spacing: 0.05em;
@@ -249,7 +249,7 @@ header {
 .event-description {
     font-family: 'Inter', sans-serif;
     font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-    font-weight: 300;
+    font-weight: 400;
     color: #999999;
     letter-spacing: 0.02em;
 }
@@ -276,7 +276,7 @@ header {
 
 .prize-amount {
     font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 900;
+    font-weight: 600;
     color: #4a7c59;
     text-shadow: 
         0 0 20px rgba(45, 90, 61, 0.5),
@@ -287,7 +287,7 @@ header {
 .prize-label {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 600;
+    font-weight: 400;
     color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.2em;
@@ -296,7 +296,7 @@ header {
 .prize-subtitle {
     font-family: 'Inter', sans-serif;
     font-size: clamp(0.8rem, 2vw, 1rem);
-    font-weight: 300;
+    font-weight: 400;
     color: #4a7c59;
     margin-top: 0.5rem;
     letter-spacing: 0.05em;
@@ -309,7 +309,7 @@ header {
 .countdown-container h2 {
     font-family: 'Inter', sans-serif;
     font-size: clamp(1.5rem, 4vw, 2.5rem);
-    font-weight: 300;
+    font-weight: 400;
     margin-bottom: 2rem;
     color: #4a7c59;
     text-transform: uppercase;
@@ -338,7 +338,7 @@ header {
 .time-value {
     font-family: 'Inter', sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 600;
+    font-weight: 500;
     color: #4a7c59;
     text-shadow: 0 0 10px rgba(45, 90, 61, 0.5);
 }
