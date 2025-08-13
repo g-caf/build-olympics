@@ -82,7 +82,68 @@ function createParticles() {
     animateParticles();
 }
 
-// CTA Button interaction
-document.querySelector('.cta-button')?.addEventListener('click', function() {
-    alert('Stay tuned! Registration details coming soon.');
+// Email signup functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const signupBtn = document.getElementById('signup-btn');
+    const emailInput = document.getElementById('email');
+    const messageDiv = document.getElementById('signup-message');
+    
+    if (signupBtn && emailInput && messageDiv) {
+        signupBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            if (!email || !email.includes('@')) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Disable button during request
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Signing Up...';
+            
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('Success! You\'ll be notified about Build Olympics updates.', 'success');
+                    emailInput.value = '';
+                } else {
+                    showMessage(data.error || 'Something went wrong. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Get Notified';
+            }
+        });
+        
+        // Allow enter key to submit
+        emailInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                signupBtn.click();
+            }
+        });
+    }
+    
+    function showMessage(text, type) {
+        const messageDiv = document.getElementById('signup-message');
+        messageDiv.textContent = text;
+        messageDiv.className = `signup-message ${type}`;
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+        }, 5000);
+    }
 });
