@@ -57,11 +57,11 @@ body {
     position: fixed;
     top: 50%;
     left: 50%;
-    width: 600px;
-    height: 600px;
+    width: 1000px;
+    height: 1000px;
     transform: translate(-50%, -50%);
     z-index: -1;
-    opacity: 0.08;
+    opacity: 0.25;
     pointer-events: none;
 }
 
@@ -69,8 +69,37 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    animation: spookySpinner 15s linear infinite, pulse 4s ease-in-out infinite alternate;
-    filter: hue-rotate(120deg) saturate(3) brightness(0.8);
+    animation: spookySpinner 15s linear infinite, pulse 4s ease-in-out infinite alternate, energyTrails 3s ease-in-out infinite alternate;
+    filter: 
+        hue-rotate(100deg) 
+        saturate(5) 
+        brightness(1.5) 
+        drop-shadow(0 0 20px #00ff41) 
+        drop-shadow(0 0 40px #39ff14) 
+        drop-shadow(0 0 60px rgba(0, 255, 65, 0.8))
+        drop-shadow(0 0 80px rgba(0, 255, 65, 0.6))
+        drop-shadow(0 0 120px rgba(0, 255, 65, 0.4));
+}
+
+.spinning-logo::before,
+.spinning-logo::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0, 255, 65, 0.1) 0%, transparent 70%);
+    animation: energyPulse 2s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+.spinning-logo::after {
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(57, 255, 20, 0.05) 0%, transparent 60%);
+    animation: energyPulse 3s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes spookySpinner {
@@ -93,12 +122,48 @@ body {
 
 @keyframes pulse {
     0% {
-        opacity: 0.05;
-        filter: hue-rotate(120deg) saturate(2) brightness(0.6);
+        opacity: 0.2;
+        filter: 
+            hue-rotate(100deg) 
+            saturate(4) 
+            brightness(1.2) 
+            drop-shadow(0 0 20px #00ff41) 
+            drop-shadow(0 0 40px #39ff14) 
+            drop-shadow(0 0 60px rgba(0, 255, 65, 0.6));
     }
     100% {
-        opacity: 0.12;
-        filter: hue-rotate(120deg) saturate(4) brightness(1.0);
+        opacity: 0.3;
+        filter: 
+            hue-rotate(100deg) 
+            saturate(6) 
+            brightness(1.8) 
+            drop-shadow(0 0 30px #00ff41) 
+            drop-shadow(0 0 60px #39ff14) 
+            drop-shadow(0 0 100px rgba(0, 255, 65, 0.8))
+            drop-shadow(0 0 140px rgba(0, 255, 65, 0.6));
+    }
+}
+
+@keyframes energyTrails {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    50% {
+        transform: scale(1.02) rotate(2deg);
+    }
+    100% {
+        transform: scale(0.98) rotate(-2deg);
+    }
+}
+
+@keyframes energyPulse {
+    0% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0.1;
+        transform: translate(-50%, -50%) scale(1.2);
     }
 }
 
@@ -106,10 +171,10 @@ body {
     .spinning-logo {
         top: 50%;
         left: 50%;
-        width: 400px;
-        height: 400px;
+        width: 700px;
+        height: 700px;
         transform: translate(-50%, -50%);
-        opacity: 0.06;
+        opacity: 0.2;
     }
 }
 
