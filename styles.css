@@ -8,7 +8,10 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
+    background: 
+        url('./glowing-green-energy-orb-isolated-electric-sphere-textured-background-captivating-image-vibrant-green-electric-ball-370320153.webp') center center/cover no-repeat,
+        radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
+    background-attachment: fixed;
     color: #ffffff;
     min-height: 100vh;
     overflow-x: hidden;
@@ -24,10 +27,11 @@ body {
     height: 100%;
     z-index: -2;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(45, 90, 61, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(74, 124, 89, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(26, 26, 46, 0.8) 0%, transparent 50%);
-    animation: backgroundPulse 20s ease-in-out infinite alternate;
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(57, 255, 20, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 60% 60%, rgba(0, 200, 50, 0.06) 0%, transparent 70%),
+        linear-gradient(45deg, rgba(0, 50, 25, 0.1) 0%, transparent 100%);
+    animation: backgroundPulse 25s ease-in-out infinite alternate;
 }
 
 @keyframes backgroundPulse {
@@ -48,8 +52,8 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(ellipse at center, rgba(26, 26, 46, 0.8) 0%, rgba(15, 15, 26, 0.9) 50%, rgba(0, 0, 0, 0.95) 100%),
-        linear-gradient(180deg, rgba(45, 90, 61, 0.05) 0%, rgba(0, 0, 0, 0.3) 100%);
+        radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.9) 100%),
+        linear-gradient(180deg, rgba(0, 20, 10, 0.6) 0%, rgba(0, 0, 0, 0.7) 100%);
     z-index: -1;
 }
 
