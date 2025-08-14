@@ -20,7 +20,7 @@ body {
     font-family: 'Orbitron', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     text-transform: uppercase;
     background: 
-        url('./glowing-green-energy-orb-isolated-electric-sphere-textured-background-captivating-image-vibrant-green-electric-ball-370320153.webp') center center/cover no-repeat,
+        url('./Firefly_I want a spooky black planet with glowing green light seeping from its cracks, it sho 294998.jpg') center center/cover no-repeat,
         radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
     background-attachment: fixed;
     color: #ffffff;
@@ -70,8 +70,8 @@ body {
 
 .spinning-logo {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 20%;
+    left: 20%;
     width: 4000px;
     height: 4000px;
     transform: translate(-50%, -50%);
@@ -92,15 +92,15 @@ body {
     transform-style: preserve-3d;
     filter: 
         hue-rotate(120deg) 
-        saturate(4) 
-        brightness(2.2)
-        contrast(1.5)
-        drop-shadow(0 0 40px rgba(0, 255, 100, 1.0))
-        drop-shadow(0 0 100px rgba(0, 255, 100, 0.9))
-        drop-shadow(0 0 200px rgba(74, 124, 89, 0.8))
-        drop-shadow(0 0 400px rgba(74, 124, 89, 0.6))
-        drop-shadow(0 0 800px rgba(74, 124, 89, 0.4))
-        drop-shadow(0 0 1600px rgba(74, 124, 89, 0.2));
+        saturate(5) 
+        brightness(3)
+        contrast(1.8)
+        drop-shadow(0 0 60px rgba(0, 255, 100, 1.0))
+        drop-shadow(0 0 120px rgba(0, 255, 100, 0.9))
+        drop-shadow(0 0 240px rgba(0, 255, 100, 0.8))
+        drop-shadow(0 0 480px rgba(74, 124, 89, 0.7))
+        drop-shadow(0 0 960px rgba(74, 124, 89, 0.6))
+        drop-shadow(0 0 1920px rgba(74, 124, 89, 0.4));
 }
 
 .spinning-logo::before,
@@ -112,18 +112,20 @@ body {
     width: 140%;
     height: 140%;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(74, 124, 89, 0.15) 0%, rgba(74, 124, 89, 0.08) 30%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 255, 100, 0.25) 0%, rgba(74, 124, 89, 0.15) 30%, rgba(74, 124, 89, 0.08) 50%, transparent 70%);
     animation: energyPulse 3s ease-in-out infinite alternate;
     pointer-events: none;
     z-index: -1;
+    border-radius: 50%;
 }
 
 .spinning-logo::after {
     width: 180%;
     height: 180%;
-    background: radial-gradient(circle, rgba(74, 124, 89, 0.08) 0%, rgba(74, 124, 89, 0.04) 40%, transparent 80%);
+    background: radial-gradient(circle, rgba(0, 255, 100, 0.15) 0%, rgba(74, 124, 89, 0.08) 30%, rgba(74, 124, 89, 0.04) 50%, transparent 80%);
     animation: energyPulse 4s ease-in-out infinite alternate-reverse;
     z-index: -1;
+    border-radius: 50%;
 }
 
 @keyframes verticalSpin {
@@ -482,7 +484,7 @@ header {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #4a7c59;
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 2rem;
