@@ -9,11 +9,11 @@
 /* Enhanced spooky green glow effect */
 .green-glow {
     text-shadow: 
-        0 0 5px rgba(0, 255, 65, 0.8),
-        0 0 10px rgba(0, 255, 65, 0.6),
-        0 0 20px rgba(0, 255, 65, 0.4),
-        0 0 40px rgba(0, 255, 65, 0.2),
-        0 0 80px rgba(0, 255, 65, 0.1);
+        0 0 5px rgba(74, 124, 89, 0.8),
+        0 0 10px rgba(74, 124, 89, 0.6),
+        0 0 20px rgba(74, 124, 89, 0.4),
+        0 0 40px rgba(74, 124, 89, 0.3),
+        0 0 80px rgba(74, 124, 89, 0.2);
 }
 
 body {
@@ -213,17 +213,16 @@ header {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(3rem, 8vw, 8rem);
     font-weight: 700;
-    color: #00ff41;
+    color: #4a7c59;
     margin-bottom: 1rem;
     letter-spacing: 0.2em;
     position: relative;
     text-transform: uppercase;
     text-shadow: 
-        0 0 10px rgba(0, 255, 65, 1.0),
-        0 0 20px rgba(0, 255, 65, 0.8),
-        0 0 40px rgba(0, 255, 65, 0.6),
-        0 0 80px rgba(0, 255, 65, 0.4),
-        0 0 120px rgba(0, 255, 65, 0.2);
+        0 0 3px rgba(74, 124, 89, 0.9),
+        0 0 8px rgba(74, 124, 89, 0.7),
+        0 0 15px rgba(74, 124, 89, 0.5),
+        0 0 30px rgba(74, 124, 89, 0.3);
 }
 
 .title::before {
@@ -245,15 +244,15 @@ header {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
     font-weight: 600;
-    color: #00ff41;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     text-shadow: 
-        0 0 5px rgba(0, 255, 65, 0.9),
-        0 0 10px rgba(0, 255, 65, 0.7),
-        0 0 20px rgba(0, 255, 65, 0.5),
-        0 0 40px rgba(0, 255, 65, 0.3),
-        0 0 80px rgba(0, 255, 65, 0.1);
+        0 0 8px rgba(74, 124, 89, 0.8),
+        0 0 15px rgba(74, 124, 89, 0.6),
+        0 0 30px rgba(74, 124, 89, 0.4),
+        0 0 60px rgba(74, 124, 89, 0.2),
+        0 0 120px rgba(74, 124, 89, 0.1);
 }
 
 .event-info {
@@ -265,15 +264,15 @@ header {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 600;
-    color: #00ff41;
+    color: #4a7c59;
     margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-shadow: 
-        0 0 5px rgba(0, 255, 65, 0.9),
-        0 0 10px rgba(0, 255, 65, 0.7),
-        0 0 20px rgba(0, 255, 65, 0.5),
-        0 0 40px rgba(0, 255, 65, 0.3);
+        0 0 8px rgba(74, 124, 89, 0.8),
+        0 0 15px rgba(74, 124, 89, 0.6),
+        0 0 30px rgba(74, 124, 89, 0.4),
+        0 0 60px rgba(74, 124, 89, 0.2);
 }
 
 .event-description {
@@ -308,15 +307,15 @@ header {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(3rem, 8vw, 6rem);
     font-weight: 800;
-    color: #00ff41;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-shadow: 
-        0 0 10px rgba(0, 255, 65, 1.0),
-        0 0 20px rgba(0, 255, 65, 0.8),
-        0 0 40px rgba(0, 255, 65, 0.6),
-        0 0 80px rgba(0, 255, 65, 0.4),
-        0 0 160px rgba(0, 255, 65, 0.2);
+        0 0 15px rgba(74, 124, 89, 0.9),
+        0 0 30px rgba(74, 124, 89, 0.7),
+        0 0 60px rgba(74, 124, 89, 0.5),
+        0 0 120px rgba(74, 124, 89, 0.3),
+        0 0 240px rgba(74, 124, 89, 0.1);
     margin-bottom: 0.5rem;
 }
 
@@ -355,15 +354,15 @@ header {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     font-weight: 700;
     margin-bottom: 2rem;
-    color: #00ff41;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     text-shadow: 
-        0 0 5px rgba(0, 255, 65, 1.0),
-        0 0 10px rgba(0, 255, 65, 0.8),
-        0 0 20px rgba(0, 255, 65, 0.6),
-        0 0 40px rgba(0, 255, 65, 0.4),
-        0 0 80px rgba(0, 255, 65, 0.2);
+        0 0 10px rgba(74, 124, 89, 0.8),
+        0 0 20px rgba(74, 124, 89, 0.6),
+        0 0 40px rgba(74, 124, 89, 0.4),
+        0 0 80px rgba(74, 124, 89, 0.2),
+        0 0 160px rgba(74, 124, 89, 0.1);
 }
 
 .countdown {
@@ -389,27 +388,27 @@ header {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
-    color: #00ff41;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-shadow: 
-        0 0 5px rgba(0, 255, 65, 1.0),
-        0 0 10px rgba(0, 255, 65, 0.8),
-        0 0 20px rgba(0, 255, 65, 0.6),
-        0 0 40px rgba(0, 255, 65, 0.4);
+        0 0 8px rgba(74, 124, 89, 0.8),
+        0 0 15px rgba(74, 124, 89, 0.6),
+        0 0 30px rgba(74, 124, 89, 0.4),
+        0 0 60px rgba(74, 124, 89, 0.2);
 }
 
 .time-label {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #00ff41;
+    color: #4a7c59;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     text-shadow: 
-        0 0 5px rgba(0, 255, 65, 0.8),
-        0 0 10px rgba(0, 255, 65, 0.6),
-        0 0 20px rgba(0, 255, 65, 0.3);
+        0 0 5px rgba(74, 124, 89, 0.8),
+        0 0 10px rgba(74, 124, 89, 0.6),
+        0 0 20px rgba(74, 124, 89, 0.3);
     margin-top: 0.5rem;
 }
 
@@ -448,15 +447,17 @@ header {
 }
 
 .registration-card h3 {
+    font-family: 'Orbitron', sans-serif;
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 1.5rem;
     color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     text-shadow: 
-        0 0 15px rgba(0, 255, 65, 0.5),
-        0 0 30px rgba(0, 255, 65, 0.3);
+        0 0 8px rgba(255, 255, 255, 0.8),
+        0 0 15px rgba(74, 124, 89, 0.6),
+        0 0 30px rgba(74, 124, 89, 0.4);
 }
 
 .registration-card p {
