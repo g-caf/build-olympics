@@ -90,12 +90,13 @@ body {
     object-fit: contain;
     animation: verticalSpin 8s linear infinite, pulse 3s ease-in-out infinite alternate, electricityFlicker 0.08s infinite;
     transform-style: preserve-3d;
+    mix-blend-mode: screen;
     filter: 
         invert(1)
         hue-rotate(90deg) 
-        saturate(15) 
-        brightness(12)
-        contrast(5)
+        saturate(25) 
+        brightness(20)
+        contrast(8)
         drop-shadow(0 0 20px rgba(0, 255, 100, 1.0))
         drop-shadow(0 0 40px rgba(0, 255, 100, 1.0))
         drop-shadow(0 0 80px rgba(0, 255, 100, 0.9))
@@ -110,33 +111,23 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 300%;
-    height: 300%;
+    width: 110%;
+    height: 110%;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(0, 255, 100, 0.6) 0%, rgba(0, 255, 100, 0.4) 20%, rgba(74, 124, 89, 0.3) 40%, rgba(74, 124, 89, 0.15) 60%, transparent 80%);
+    background: radial-gradient(circle, rgba(0, 255, 100, 0.4) 0%, rgba(0, 255, 100, 0.2) 30%, rgba(74, 124, 89, 0.1) 60%, transparent 80%);
     animation: energyPulse 1.5s ease-in-out infinite alternate, electricityFlicker 0.08s infinite;
     pointer-events: none;
     z-index: -1;
     border-radius: 50%;
-    box-shadow: 
-        0 0 200px rgba(0, 255, 100, 0.8),
-        0 0 400px rgba(0, 255, 100, 0.6),
-        0 0 800px rgba(0, 255, 100, 0.4),
-        inset 0 0 100px rgba(0, 255, 100, 0.3);
 }
 
 .spinning-logo::after {
-    width: 500%;
-    height: 500%;
-    background: radial-gradient(circle, rgba(0, 255, 100, 0.4) 0%, rgba(0, 255, 100, 0.25) 15%, rgba(74, 124, 89, 0.2) 35%, rgba(74, 124, 89, 0.1) 55%, rgba(74, 124, 89, 0.05) 75%, transparent 90%);
+    width: 130%;
+    height: 130%;
+    background: radial-gradient(circle, rgba(0, 255, 100, 0.2) 0%, rgba(74, 124, 89, 0.1) 40%, rgba(74, 124, 89, 0.05) 70%, transparent 90%);
     animation: energyPulse 2s ease-in-out infinite alternate-reverse, electricityFlicker 0.12s infinite reverse;
     z-index: -1;
     border-radius: 50%;
-    box-shadow: 
-        0 0 400px rgba(0, 255, 100, 0.6),
-        0 0 800px rgba(0, 255, 100, 0.4),
-        0 0 1600px rgba(0, 255, 100, 0.3),
-        0 0 3200px rgba(74, 124, 89, 0.2);
 }
 
 @keyframes verticalSpin {
@@ -209,19 +200,19 @@ body {
 }
 
 @keyframes electricityFlicker {
-    0% { filter: invert(1) brightness(12) saturate(15) contrast(5) hue-rotate(90deg); }
-    8% { filter: invert(1) brightness(20) saturate(25) contrast(8) hue-rotate(85deg); }
-    16% { filter: invert(1) brightness(8) saturate(10) contrast(3) hue-rotate(95deg); }
-    25% { filter: invert(1) brightness(25) saturate(30) contrast(10) hue-rotate(80deg); }
-    33% { filter: invert(1) brightness(15) saturate(18) contrast(6) hue-rotate(90deg); }
-    41% { filter: invert(1) brightness(30) saturate(35) contrast(12) hue-rotate(75deg); }
-    50% { filter: invert(1) brightness(10) saturate(12) contrast(4) hue-rotate(95deg); }
-    58% { filter: invert(1) brightness(35) saturate(40) contrast(15) hue-rotate(70deg); }
-    66% { filter: invert(1) brightness(18) saturate(22) contrast(7) hue-rotate(88deg); }
-    75% { filter: invert(1) brightness(28) saturate(32) contrast(11) hue-rotate(82deg); }
-    83% { filter: invert(1) brightness(14) saturate(16) contrast(5) hue-rotate(92deg); }
-    91% { filter: invert(1) brightness(22) saturate(28) contrast(9) hue-rotate(78deg); }
-    100% { filter: invert(1) brightness(12) saturate(15) contrast(5) hue-rotate(90deg); }
+    0% { filter: invert(1) brightness(20) saturate(25) contrast(8) hue-rotate(90deg); }
+    8% { filter: invert(1) brightness(35) saturate(40) contrast(15) hue-rotate(85deg); }
+    16% { filter: invert(1) brightness(15) saturate(20) contrast(6) hue-rotate(95deg); }
+    25% { filter: invert(1) brightness(45) saturate(50) contrast(20) hue-rotate(80deg); }
+    33% { filter: invert(1) brightness(25) saturate(30) contrast(10) hue-rotate(90deg); }
+    41% { filter: invert(1) brightness(50) saturate(60) contrast(25) hue-rotate(75deg); }
+    50% { filter: invert(1) brightness(18) saturate(22) contrast(7) hue-rotate(95deg); }
+    58% { filter: invert(1) brightness(60) saturate(70) contrast(30) hue-rotate(70deg); }
+    66% { filter: invert(1) brightness(30) saturate(35) contrast(12) hue-rotate(88deg); }
+    75% { filter: invert(1) brightness(40) saturate(45) contrast(18) hue-rotate(82deg); }
+    83% { filter: invert(1) brightness(22) saturate(28) contrast(9) hue-rotate(92deg); }
+    91% { filter: invert(1) brightness(35) saturate(40) contrast(15) hue-rotate(78deg); }
+    100% { filter: invert(1) brightness(20) saturate(25) contrast(8) hue-rotate(90deg); }
 }
 
 @media (max-width: 768px) {
