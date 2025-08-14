@@ -91,14 +91,16 @@ body {
     animation: verticalSpin 8s linear infinite, pulse 4s ease-in-out infinite alternate;
     transform-style: preserve-3d;
     filter: 
-        hue-rotate(90deg) 
-        saturate(3) 
-        brightness(1.6)
-        drop-shadow(0 0 80px rgba(74, 124, 89, 1.0))
-        drop-shadow(0 0 160px rgba(74, 124, 89, 0.8))
-        drop-shadow(0 0 320px rgba(74, 124, 89, 0.6))
-        drop-shadow(0 0 640px rgba(74, 124, 89, 0.4))
-        drop-shadow(0 0 1280px rgba(74, 124, 89, 0.2));
+        hue-rotate(120deg) 
+        saturate(4) 
+        brightness(2.2)
+        contrast(1.5)
+        drop-shadow(0 0 40px rgba(0, 255, 100, 1.0))
+        drop-shadow(0 0 100px rgba(0, 255, 100, 0.9))
+        drop-shadow(0 0 200px rgba(74, 124, 89, 0.8))
+        drop-shadow(0 0 400px rgba(74, 124, 89, 0.6))
+        drop-shadow(0 0 800px rgba(74, 124, 89, 0.4))
+        drop-shadow(0 0 1600px rgba(74, 124, 89, 0.2));
 }
 
 .spinning-logo::before,
@@ -489,6 +491,15 @@ header {
         0 0 10px rgba(74, 124, 89, 0.4);
 }
 
+.button-container {
+    margin-bottom: 1rem;
+}
+
+.spacing-placeholder {
+    height: 60px; /* Matches signup-message height */
+    margin-top: 1rem;
+}
+
 .registration-button {
     font-family: 'Inter', sans-serif;
     font-size: 1.1rem;
@@ -514,8 +525,8 @@ header {
 
 .attend-btn {
     background: linear-gradient(45deg, #1a1a1a, #000000);
-    color: #ffffff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    color: #4a7c59;
+    text-shadow: 0 0 10px rgba(74, 124, 89, 0.6);
 }
 
 .registration-button:hover {
@@ -531,7 +542,7 @@ header {
 
 .attend-btn:hover {
     background: linear-gradient(45deg, #2a2a2a, #1a1a1a);
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 15px rgba(74, 124, 89, 0.8);
 }
 
 .cta-button {
