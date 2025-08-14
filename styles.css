@@ -574,7 +574,8 @@ header {
 }
 
 .email-input::placeholder {
-    color: #888888;
+    color: #4a7c59;
+    opacity: 0.8;
 }
 
 .signup-message {
