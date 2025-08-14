@@ -88,21 +88,20 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    animation: verticalSpin 8s linear infinite, pulse 4s ease-in-out infinite alternate, electricityFlicker 0.1s infinite;
+    animation: verticalSpin 8s linear infinite, pulse 3s ease-in-out infinite alternate, electricityFlicker 0.08s infinite;
     transform-style: preserve-3d;
     filter: 
-        hue-rotate(120deg) 
-        saturate(10) 
-        brightness(8)
-        contrast(3)
-        drop-shadow(0 0 100px rgba(0, 255, 100, 1.0))
-        drop-shadow(0 0 200px rgba(0, 255, 100, 1.0))
-        drop-shadow(0 0 400px rgba(0, 255, 100, 1.0))
-        drop-shadow(0 0 800px rgba(0, 255, 100, 0.9))
-        drop-shadow(0 0 1600px rgba(0, 255, 100, 0.8))
-        drop-shadow(0 0 3200px rgba(0, 255, 100, 0.7))
-        drop-shadow(0 0 6400px rgba(74, 124, 89, 0.6))
-        drop-shadow(0 0 12800px rgba(74, 124, 89, 0.5));
+        invert(1)
+        hue-rotate(90deg) 
+        saturate(15) 
+        brightness(12)
+        contrast(5)
+        drop-shadow(0 0 20px rgba(0, 255, 100, 1.0))
+        drop-shadow(0 0 40px rgba(0, 255, 100, 1.0))
+        drop-shadow(0 0 80px rgba(0, 255, 100, 0.9))
+        drop-shadow(0 0 160px rgba(0, 255, 100, 0.8))
+        drop-shadow(0 0 320px rgba(74, 124, 89, 0.7))
+        drop-shadow(0 0 640px rgba(74, 124, 89, 0.5));
 }
 
 .spinning-logo::before,
@@ -210,17 +209,19 @@ body {
 }
 
 @keyframes electricityFlicker {
-    0% { filter: brightness(8) saturate(10) contrast(3) hue-rotate(120deg); }
-    10% { filter: brightness(12) saturate(15) contrast(4) hue-rotate(115deg); }
-    20% { filter: brightness(6) saturate(8) contrast(2.5) hue-rotate(125deg); }
-    30% { filter: brightness(15) saturate(20) contrast(5) hue-rotate(110deg); }
-    40% { filter: brightness(9) saturate(12) contrast(3.5) hue-rotate(120deg); }
-    50% { filter: brightness(18) saturate(25) contrast(6) hue-rotate(105deg); }
-    60% { filter: brightness(7) saturate(9) contrast(2.8) hue-rotate(125deg); }
-    70% { filter: brightness(20) saturate(30) contrast(7) hue-rotate(100deg); }
-    80% { filter: brightness(10) saturate(14) contrast(4) hue-rotate(115deg); }
-    90% { filter: brightness(16) saturate(22) contrast(5.5) hue-rotate(108deg); }
-    100% { filter: brightness(8) saturate(10) contrast(3) hue-rotate(120deg); }
+    0% { filter: invert(1) brightness(12) saturate(15) contrast(5) hue-rotate(90deg); }
+    8% { filter: invert(1) brightness(20) saturate(25) contrast(8) hue-rotate(85deg); }
+    16% { filter: invert(1) brightness(8) saturate(10) contrast(3) hue-rotate(95deg); }
+    25% { filter: invert(1) brightness(25) saturate(30) contrast(10) hue-rotate(80deg); }
+    33% { filter: invert(1) brightness(15) saturate(18) contrast(6) hue-rotate(90deg); }
+    41% { filter: invert(1) brightness(30) saturate(35) contrast(12) hue-rotate(75deg); }
+    50% { filter: invert(1) brightness(10) saturate(12) contrast(4) hue-rotate(95deg); }
+    58% { filter: invert(1) brightness(35) saturate(40) contrast(15) hue-rotate(70deg); }
+    66% { filter: invert(1) brightness(18) saturate(22) contrast(7) hue-rotate(88deg); }
+    75% { filter: invert(1) brightness(28) saturate(32) contrast(11) hue-rotate(82deg); }
+    83% { filter: invert(1) brightness(14) saturate(16) contrast(5) hue-rotate(92deg); }
+    91% { filter: invert(1) brightness(22) saturate(28) contrast(9) hue-rotate(78deg); }
+    100% { filter: invert(1) brightness(12) saturate(15) contrast(5) hue-rotate(90deg); }
 }
 
 @media (max-width: 768px) {
