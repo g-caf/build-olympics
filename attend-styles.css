@@ -306,9 +306,10 @@ header {
 }
 
 .ticket-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: start;
 }
 
 .ticket-info h4 {
@@ -330,8 +331,10 @@ header {
 .price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #00ff41;
-    text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    color: #4a7c59;
+    text-shadow: 0 0 10px rgba(74, 124, 89, 0.6);
+    text-align: right;
+    align-self: center;
 }
 
 .form-actions {
