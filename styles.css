@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 * {
     margin: 0;
@@ -6,16 +6,19 @@
     box-sizing: border-box;
 }
 
-/* Green glow effect for text */
+/* Enhanced spooky green glow effect */
 .green-glow {
     text-shadow: 
-        0 0 10px rgba(74, 124, 89, 0.4),
-        0 0 20px rgba(74, 124, 89, 0.3),
-        0 0 40px rgba(74, 124, 89, 0.2);
+        0 0 5px rgba(0, 255, 65, 0.8),
+        0 0 10px rgba(0, 255, 65, 0.6),
+        0 0 20px rgba(0, 255, 65, 0.4),
+        0 0 40px rgba(0, 255, 65, 0.2),
+        0 0 80px rgba(0, 255, 65, 0.1);
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Orbitron', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    text-transform: uppercase;
     background: 
         url('./glowing-green-energy-orb-isolated-electric-sphere-textured-background-captivating-image-vibrant-green-electric-ball-370320153.webp') center center/cover no-repeat,
         radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
@@ -207,17 +210,20 @@ header {
 }
 
 .title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(3rem, 8vw, 8rem);
-    font-weight: 400;
-    color: #2d5a3d;
+    font-weight: 700;
+    color: #00ff41;
     margin-bottom: 1rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     position: relative;
+    text-transform: uppercase;
     text-shadow: 
-        0 0 20px rgba(45, 90, 61, 0.3),
-        0 0 40px rgba(45, 90, 61, 0.5),
-        0 0 60px rgba(45, 90, 61, 0.3);
+        0 0 10px rgba(0, 255, 65, 1.0),
+        0 0 20px rgba(0, 255, 65, 0.8),
+        0 0 40px rgba(0, 255, 65, 0.6),
+        0 0 80px rgba(0, 255, 65, 0.4),
+        0 0 120px rgba(0, 255, 65, 0.2);
 }
 
 .title::before {
@@ -236,16 +242,18 @@ header {
 }
 
 .subtitle {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 500;
-    color: #4a7c59;
+    font-weight: 600;
+    color: #00ff41;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     text-shadow: 
-        0 0 10px rgba(74, 124, 89, 0.4),
-        0 0 20px rgba(74, 124, 89, 0.3),
-        0 0 40px rgba(74, 124, 89, 0.2);
+        0 0 5px rgba(0, 255, 65, 0.9),
+        0 0 10px rgba(0, 255, 65, 0.7),
+        0 0 20px rgba(0, 255, 65, 0.5),
+        0 0 40px rgba(0, 255, 65, 0.3),
+        0 0 80px rgba(0, 255, 65, 0.1);
 }
 
 .event-info {
@@ -254,16 +262,18 @@ header {
 }
 
 .event-date {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 500;
-    color: #4a7c59;
+    font-weight: 600;
+    color: #00ff41;
     margin-bottom: 0.5rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     text-shadow: 
-        0 0 10px rgba(74, 124, 89, 0.4),
-        0 0 20px rgba(74, 124, 89, 0.3),
-        0 0 40px rgba(74, 124, 89, 0.2);
+        0 0 5px rgba(0, 255, 65, 0.9),
+        0 0 10px rgba(0, 255, 65, 0.7),
+        0 0 20px rgba(0, 255, 65, 0.5),
+        0 0 40px rgba(0, 255, 65, 0.3);
 }
 
 .event-description {
@@ -295,13 +305,18 @@ header {
 }
 
 .prize-amount {
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 500;
-    color: #4a7c59;
+    font-weight: 800;
+    color: #00ff41;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     text-shadow: 
-        0 0 15px rgba(74, 124, 89, 0.5),
-        0 0 30px rgba(74, 124, 89, 0.4),
-        0 0 60px rgba(74, 124, 89, 0.3);
+        0 0 10px rgba(0, 255, 65, 1.0),
+        0 0 20px rgba(0, 255, 65, 0.8),
+        0 0 40px rgba(0, 255, 65, 0.6),
+        0 0 80px rgba(0, 255, 65, 0.4),
+        0 0 160px rgba(0, 255, 65, 0.2);
     margin-bottom: 0.5rem;
 }
 
@@ -336,17 +351,19 @@ header {
 }
 
 .countdown-container h2 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(1.5rem, 4vw, 2.5rem);
-    font-weight: 500;
+    font-weight: 700;
     margin-bottom: 2rem;
-    color: #4a7c59;
+    color: #00ff41;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.15em;
     text-shadow: 
-        0 0 10px rgba(74, 124, 89, 0.4),
-        0 0 20px rgba(74, 124, 89, 0.3),
-        0 0 40px rgba(74, 124, 89, 0.2);
+        0 0 5px rgba(0, 255, 65, 1.0),
+        0 0 10px rgba(0, 255, 65, 0.8),
+        0 0 20px rgba(0, 255, 65, 0.6),
+        0 0 40px rgba(0, 255, 65, 0.4),
+        0 0 80px rgba(0, 255, 65, 0.2);
 }
 
 .countdown {
@@ -369,26 +386,30 @@ header {
 }
 
 .time-value {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 500;
-    color: #4a7c59;
+    font-weight: 700;
+    color: #00ff41;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     text-shadow: 
-        0 0 10px rgba(74, 124, 89, 0.5),
-        0 0 20px rgba(74, 124, 89, 0.3),
-        0 0 40px rgba(74, 124, 89, 0.2);
+        0 0 5px rgba(0, 255, 65, 1.0),
+        0 0 10px rgba(0, 255, 65, 0.8),
+        0 0 20px rgba(0, 255, 65, 0.6),
+        0 0 40px rgba(0, 255, 65, 0.4);
 }
 
 .time-label {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 0.9rem;
-    font-weight: 500;
-    color: #4a7c59;
+    font-weight: 600;
+    color: #00ff41;
     text-transform: uppercase;
+    letter-spacing: 0.2em;
     text-shadow: 
-        0 0 8px rgba(74, 124, 89, 0.4),
-        0 0 15px rgba(74, 124, 89, 0.2);
-    letter-spacing: 0.15em;
+        0 0 5px rgba(0, 255, 65, 0.8),
+        0 0 10px rgba(0, 255, 65, 0.6),
+        0 0 20px rgba(0, 255, 65, 0.3);
     margin-top: 0.5rem;
 }
 
@@ -439,10 +460,17 @@ header {
 }
 
 .registration-card p {
+    font-family: 'Orbitron', sans-serif;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     margin-bottom: 2rem;
     font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.3),
+        0 0 10px rgba(0, 255, 65, 0.2);
 }
 
 .registration-button {
