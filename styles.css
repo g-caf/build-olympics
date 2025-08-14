@@ -473,7 +473,20 @@ header {
     letter-spacing: 0.05em;
     text-shadow: 
         0 0 3px rgba(255, 255, 255, 0.3),
-        0 0 10px rgba(0, 255, 65, 0.2);
+        0 0 10px rgba(74, 124, 89, 0.2);
+}
+
+.registration-card .event-details {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4a7c59;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    text-shadow: 
+        0 0 5px rgba(74, 124, 89, 0.6),
+        0 0 10px rgba(74, 124, 89, 0.4);
 }
 
 .registration-button {
@@ -495,8 +508,8 @@ header {
 
 .compete-btn {
     background: linear-gradient(45deg, #000000, #1a1a1a);
-    color: #00ff41;
-    text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    color: #4a7c59;
+    text-shadow: 0 0 10px rgba(74, 124, 89, 0.6);
 }
 
 .attend-btn {
@@ -513,7 +526,7 @@ header {
 
 .compete-btn:hover {
     background: linear-gradient(45deg, #0a2e0a, #1a4a1a);
-    text-shadow: 0 0 15px rgba(0, 255, 65, 0.8);
+    text-shadow: 0 0 15px rgba(74, 124, 89, 0.8);
 }
 
 .attend-btn:hover {
