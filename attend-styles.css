@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 * {
     margin: 0;
@@ -7,7 +7,8 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Orbitron', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    text-transform: uppercase;
     background: 
         url('./glowing-green-energy-orb-isolated-electric-sphere-textured-background-captivating-image-vibrant-green-electric-ball-370320153.webp') center center/cover no-repeat,
         radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
@@ -109,30 +110,34 @@ header {
 }
 
 .title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 400;
-    color: #2d5a3d;
+    font-weight: 700;
+    color: #4a7c59;
     margin-bottom: 1rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     position: relative;
+    text-transform: uppercase;
     text-shadow: 
-        0 0 20px rgba(45, 90, 61, 0.3),
-        0 0 40px rgba(45, 90, 61, 0.5),
-        0 0 60px rgba(45, 90, 61, 0.3);
+        0 0 3px rgba(74, 124, 89, 0.9),
+        0 0 8px rgba(74, 124, 89, 0.7),
+        0 0 15px rgba(74, 124, 89, 0.5),
+        0 0 30px rgba(74, 124, 89, 0.3);
 }
 
 .subtitle {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 500;
+    font-weight: 600;
     color: #4a7c59;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     text-shadow: 
-        0 0 10px rgba(74, 124, 89, 0.4),
-        0 0 20px rgba(74, 124, 89, 0.3),
-        0 0 40px rgba(74, 124, 89, 0.2);
+        0 0 8px rgba(74, 124, 89, 0.8),
+        0 0 15px rgba(74, 124, 89, 0.6),
+        0 0 30px rgba(74, 124, 89, 0.4),
+        0 0 60px rgba(74, 124, 89, 0.2),
+        0 0 120px rgba(74, 124, 89, 0.1);
 }
 
 .event-date {

@@ -69,19 +69,17 @@ body {
 }
 
 .spinning-logo {
+    display: none;
     position: fixed;
-    top: 20%;
-    left: 20%;
-    width: 4000px;
-    height: 4000px;
+    top: 50%;
+    left: 50%;
+    width: 1000px;
+    height: 1000px;
     transform: translate(-50%, -50%);
     z-index: -1;
-    opacity: 0.3;
+    opacity: 0.25;
     pointer-events: none;
-    perspective: 8000px;
-    background: none;
-    border: none;
-    outline: none;
+    perspective: 1000px;
 }
 
 .spinning-logo img {
