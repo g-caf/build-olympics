@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend Build Olympics - $1M Prize Competition</title>
+    <link rel="stylesheet" href="attend-styles.css">
+</head>
+<body>
+    <div class="animated-background"></div>
+    <div class="video-overlay"></div>
+    
+    <div class="spinning-logo">
+        <img src="Untitled design (8).png" alt="Amp Logo" />
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1 class="title">BUILD OLYMPICS</h1>
+            <p class="subtitle">LIVE EVENT REGISTRATION</p>
+            <div class="event-info">
+                <div class="event-date">October 29th, 2025 • San Francisco</div>
+            </div>
+        </header>
+
+        <main>
+            <div class="registration-form-container">
+                <div class="form-header">
+                    <h2>WITNESS THE ULTIMATE CODING BATTLE</h2>
+                    <p>Be there as sixteen elite developers compete for $1,000,000 in the most intense programming competition ever created.</p>
+                </div>
+                
+                <form class="attend-form" id="attend-form">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Event Details</h3>
+                        <div class="event-details">
+                            <div class="detail-card">
+                                <h4>Date & Time</h4>
+                                <p>October 29th, 2025<br>6:00 PM - 11:00 PM PST</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Location</h4>
+                                <p>Moscone Center<br>San Francisco, CA</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Experience</h4>
+                                <p>Live coding battle<br>Real-time commentary<br>Networking reception</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Ticket Options</h3>
+                        <div class="ticket-options">
+                            <div class="ticket-option">
+                                <input type="radio" id="general" name="ticketType" value="general" checked>
+                                <label for="general" class="ticket-label">
+                                    <div class="ticket-info">
+                                        <h4>General Admission</h4>
+                                        <p>Standard seating, event access, networking reception</p>
+                                        <span class="price">$299</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="ticket-option">
+                                <input type="radio" id="vip" name="ticketType" value="vip">
+                                <label for="vip" class="ticket-label">
+                                    <div class="ticket-info">
+                                        <h4>VIP Experience</h4>
+                                        <p>Front row seating, backstage access, meet & greet, exclusive swag</p>
+                                        <span class="price">$799</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">SECURE YOUR SEAT - $299</button>
+                        <p class="form-note">You'll receive confirmation and payment details via email</p>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Build Olympics. All rights reserved.</p>
+            <a href="index.html" class="back-link">← Back to Main Event</a>
+        </footer>
+    </div>
+
+    <script src="attend-script.js"></script>
+</body>
+</html>
