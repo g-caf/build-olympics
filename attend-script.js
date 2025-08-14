@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update button text based on selected ticket
     function updateButtonText() {
         const selectedTicket = document.querySelector('input[name="ticketType"]:checked');
-        const price = selectedTicket.value === 'vip' ? '$799' : '$299';
+        const price = selectedTicket.value === 'vip' ? '$100' : '$20';
         const ticketType = selectedTicket.value === 'vip' ? 'VIP' : 'GENERAL';
         submitBtn.textContent = `SECURE YOUR ${ticketType} SEAT - ${price}`;
     }
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showSuccessMessage(data) {
         const ticketType = data.ticketType === 'vip' ? 'VIP' : 'General Admission';
-        const price = data.ticketType === 'vip' ? '$799' : '$299';
+        const price = data.ticketType === 'vip' ? '$100' : '$20';
         
         const successHtml = `
             <div class="success-message">
