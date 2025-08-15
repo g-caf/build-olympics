@@ -115,5 +115,5 @@ process.on('SIGINT', () => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Build Olympics wireframe server running on port ${PORT}`);
 });
