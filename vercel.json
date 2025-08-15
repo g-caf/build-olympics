@@ -1,13 +1,3 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/terms",
-      "destination": "/wireframe-terms.html"
-    },
-    {
-      "source": "/attend",
-      "destination": "/wireframe-attend.html"
-    }
-  ]
+  "cleanUrls": true
 }
