@@ -1,16 +1,13 @@
 {
-  "routes": [
+  "cleanUrls": true,
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "/index.html"
+      "source": "/terms",
+      "destination": "/wireframe-terms.html"
     },
     {
-      "src": "/wireframe-attend.html",
-      "dest": "/wireframe-attend.html"
-    },
-    {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|webp|ico))",
-      "dest": "/$1"
+      "source": "/attend",
+      "destination": "/wireframe-attend.html"
     }
   ]
 }
