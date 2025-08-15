@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Spinning Logo Demo - Build Olympics</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            text-transform: uppercase;
+            background: 
+                url('./Firefly_I want a spooky black planet with glowing green light seeping from its cracks, it sho 294998.jpg') center center/cover no-repeat,
+                radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 50%, #000000 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            font-weight: 400;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(57, 255, 20, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 60% 60%, rgba(0, 200, 50, 0.06) 0%, transparent 70%),
+                linear-gradient(45deg, rgba(0, 50, 25, 0.1) 0%, transparent 100%);
+            animation: backgroundPulse 25s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundPulse {
+            0% {
+                transform: scale(1) rotate(0deg);
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                transform: scale(1.1) rotate(5deg);
+                filter: hue-rotate(20deg);
+            }
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.6) 100%),
+                linear-gradient(180deg, rgba(0, 20, 10, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: -1;
+        }
+
+        /* Spinning logo container */
+        .spinning-logo {
+            width: 400px;
+            height: 400px;
+            animation: spin3D 8s linear infinite;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .spinning-logo svg {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+            overflow: visible;
+        }
+
+        .logo-path {
+            fill: none;
+            stroke: #4a7c59;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 6px #4a7c59);
+            animation: electricity 0.1s infinite;
+        }
+
+        .logo-path:nth-child(1) {
+            animation: electricity1 0.3s infinite;
+        }
+        .logo-path:nth-child(2) {
+            animation: electricity2 0.4s infinite;
+        }
+        .logo-path:nth-child(3) {
+            animation: electricity3 0.5s infinite;
+        }
+
+        @keyframes spin3D {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        @keyframes electricity1 {
+            0% { stroke: #4a7c59; stroke-width: 2; filter: drop-shadow(0 0 6px #4a7c59) brightness(1); }
+            25% { stroke: #5a8c69; stroke-width: 2.5; filter: drop-shadow(0 0 10px #5a8c69) brightness(1.4); }
+            50% { stroke: #6a9c79; stroke-width: 2.8; filter: drop-shadow(0 0 12px #6a9c79) brightness(1.8); }
+            75% { stroke: #7aac89; stroke-width: 2.3; filter: drop-shadow(0 0 8px #7aac89) brightness(1.2); }
+            100% { stroke: #4a7c59; stroke-width: 2; filter: drop-shadow(0 0 6px #4a7c59) brightness(1); }
+        }
+
+        @keyframes electricity2 {
+            0% { stroke: #5a8c69; stroke-width: 2.1; filter: drop-shadow(0 0 8px #5a8c69) brightness(1.2); }
+            33% { stroke: #8fbc8f; stroke-width: 2.6; filter: drop-shadow(0 0 11px #8fbc8f) brightness(1.6); }
+            66% { stroke: #7aac89; stroke-width: 2.3; filter: drop-shadow(0 0 9px #7aac89) brightness(1.3); }
+            100% { stroke: #5a8c69; stroke-width: 2.1; filter: drop-shadow(0 0 8px #5a8c69) brightness(1.2); }
+        }
+
+        @keyframes electricity3 {
+            0% { stroke: #6a9c79; stroke-width: 2.2; filter: drop-shadow(0 0 9px #6a9c79) brightness(1.3); }
+            50% { stroke: #8fbc8f; stroke-width: 2.7; filter: drop-shadow(0 0 12px #8fbc8f) brightness(1.7); }
+            100% { stroke: #6a9c79; stroke-width: 2.2; filter: drop-shadow(0 0 9px #6a9c79) brightness(1.3); }
+        }
+
+        /* Content positioning to not interfere with orbit */
+        .content {
+            position: relative;
+            z-index: 5;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            color: #4a7c59;
+            text-align: center;
+            margin: 4rem 0;
+            letter-spacing: 0.2em;
+            text-shadow: 
+                0 0 3px rgba(74, 124, 89, 0.9),
+                0 0 8px rgba(74, 124, 89, 0.7),
+                0 0 15px rgba(74, 124, 89, 0.5),
+                0 0 30px rgba(74, 124, 89, 0.3);
+        }
+
+        .demo-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: #cccccc;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            color: #4a7c59;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            z-index: 10;
+            text-shadow: 
+                0 0 8px rgba(74, 124, 89, 0.4),
+                0 0 15px rgba(74, 124, 89, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #8fbc8f;
+            text-shadow: 0 0 15px rgba(143, 188, 143, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-background"></div>
+    <div class="video-overlay"></div>
+    
+    <a href="index.html" class="back-link">← Back to Main</a>
+    
+    <div class="orbit-container">
+        <div class="orbiting-logo">
+            <svg viewBox="0 0 120 120" width="100%" height="100%">
+                <!-- Clean geometric Amp logo based on reference image -->
+                <!-- Outer/largest rectangle -->
+                <path class="logo-path" d="M80 20 L80 35 L95 50 L95 65 L80 80 L25 80 L25 65 L10 50 L10 35 L25 20 Z M70 30 L70 45 L85 60 L85 70 L35 70 L35 60 L20 45 L20 30 Z"/>
+                
+                <!-- Middle rectangle -->  
+                <path class="logo-path" d="M70 30 L70 40 L80 50 L80 60 L35 60 L35 50 L25 40 L25 30 Z M60 35 L60 45 L70 55 L70 55 L45 55 L45 45 L30 35 L30 35 Z"/>
+                
+                <!-- Inner/smallest rectangle with arrow -->
+                <path class="logo-path" d="M60 35 L60 45 L70 55 L45 55 L45 45 L35 35 Z M50 40 L50 50 L60 50 L45 40 L40 40 L40 35 L45 35 Z"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="content">
+        <h1 class="demo-title">CLEAN ORBITING LOGO DEMO</h1>
+        <p class="demo-description">
+            Clean geometric version of the Amp logo with perfect straight lines and corners. 
+            Maintains all original animations: orbital path, rotation, scaling, and crackling electricity effects.
+            Watch as the logo emerges from behind the planet in a 30-second cycle.
+        </p>
+    </div>
+</body>
+</html>
