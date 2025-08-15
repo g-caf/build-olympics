@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Olympics - $1M Prize Competition</title>
+    <link rel="stylesheet" href="wireframe-styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="title">Build Olympics</h1>
+            <p class="subtitle">Four qualifying rounds. Sixteen finalists. One arena battle.</p>
+            <div class="event-info">
+                <div class="event-date">October 29th, 2025 • San Francisco</div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="prize-container">
+                    <div class="prize-amount">$1,000,000</div>
+                    <div class="prize-label">Winner Takes All</div>
+                </div>
+                
+                <div class="countdown-container">
+                    <h2>First qualifying challenge opens on September 15th, 2025</h2>
+                    <div class="countdown" id="countdown">
+                        <div class="time-unit">
+                            <span class="time-value" id="days">000</span>
+                            <span class="time-label">Days</span>
+                        </div>
+                        <div class="time-unit">
+                            <span class="time-value" id="hours">00</span>
+                            <span class="time-label">Hours</span>
+                        </div>
+                        <div class="time-unit">
+                            <span class="time-value" id="minutes">00</span>
+                            <span class="time-label">Minutes</span>
+                        </div>
+                        <div class="time-unit">
+                            <span class="time-value" id="seconds">00</span>
+                            <span class="time-label">Seconds</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="registration-section">
+                <div class="registration-card compete">
+                    <h3>Register to Compete</h3>
+                    <p>Enter the arena. Four qualifying rounds. Winner takes $1,000,000.</p>
+                    <div class="signup-form">
+                        <input type="email" id="email" placeholder="Enter your email" class="email-input" required>
+                        <button type="submit" class="registration-button compete-btn" id="signup-btn">Join the Competition</button>
+                    </div>
+                    <div id="signup-message" class="signup-message"></div>
+                </div>
+
+                <div class="registration-card attend">
+                    <h3>Register to Attend</h3>
+                    <p>Witness history. Watch the ultimate coding battle live in San Francisco.</p>
+                    <p class="event-details">October 29th, 2025 • The Midway SF</p>
+                    <div class="button-container">
+                        <a href="wireframe-attend.html" class="registration-button attend-btn">Get Tickets</a>
+                    </div>
+                    <div class="spacing-placeholder"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p class="amp-credit">Supported by Amp</p>
+            <p class="copyright">&copy; 2025 Build Olympics. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

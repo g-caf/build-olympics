@@ -47,7 +47,7 @@ const db = new sqlite3.Database('./signups.db', (err) => {
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'wireframe-index.html'));
 });
 
 // API endpoint to handle email signups

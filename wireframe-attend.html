@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register to Attend - Build Olympics</title>
+    <link rel="stylesheet" href="wireframe-attend-styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="wireframe-index.html" class="back-link">← Back to Build Olympics</a>
+            <h1 class="title">Register to Attend</h1>
+            <p class="subtitle">Witness history. Watch the ultimate coding battle live in San Francisco.</p>
+        </header>
+
+        <main>
+            <section class="event-details-section">
+                <div class="event-info-card">
+                    <h2>Event Details</h2>
+                    <div class="detail-item">
+                        <span class="label">Date:</span>
+                        <span class="value">October 29th, 2025</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Time:</span>
+                        <span class="value">7:00 PM - 11:00 PM PST</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Venue:</span>
+                        <span class="value">The Midway SF</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Address:</span>
+                        <span class="value">900 Marin St, San Francisco, CA 94124</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="registration-form-section">
+                <form class="attend-form" id="attend-form">
+                    <h2>Get Your Tickets</h2>
+                    
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="fullName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">Company/Organization (Optional)</label>
+                        <input type="text" id="company" name="company">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="role">Role/Title (Optional)</label>
+                        <input type="text" id="role" name="role">
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="updates" name="updates">
+                            <span class="checkmark"></span>
+                            Send me updates about Build Olympics
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">Reserve My Spot</button>
+                    
+                    <div id="form-message" class="form-message"></div>
+                </form>
+            </section>
+
+            <section class="what-to-expect">
+                <h2>What to Expect</h2>
+                <div class="expectation-list">
+                    <div class="expectation-item">
+                        <h3>Live Coding Competition</h3>
+                        <p>Watch 16 finalists compete in real-time coding challenges</p>
+                    </div>
+                    <div class="expectation-item">
+                        <h3>$1M Prize Award</h3>
+                        <p>Witness the moment when one developer takes home the ultimate prize</p>
+                    </div>
+                    <div class="expectation-item">
+                        <h3>Networking</h3>
+                        <p>Connect with developers, founders, and tech leaders from around the world</p>
+                    </div>
+                    <div class="expectation-item">
+                        <h3>Food & Drinks</h3>
+                        <p>Complimentary refreshments throughout the evening</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p class="amp-credit">Supported by Amp</p>
+            <p class="copyright">&copy; 2025 Build Olympics. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="attend-script.js"></script>
+</body>
+</html>
