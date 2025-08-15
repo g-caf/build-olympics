@@ -139,6 +139,10 @@ header {
     padding: 3rem 0;
     border-top: 2px solid #e0e0e0;
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 350px;
 }
 
 .registration-card h3 {
@@ -168,7 +172,6 @@ header {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-top: 2rem;
     max-width: 350px;
 }
 
@@ -193,7 +196,6 @@ header {
 }
 
 .button-container {
-    margin-top: 2rem;
     max-width: 350px;
 }
 
@@ -235,10 +237,7 @@ header {
     background: #333333;
 }
 
-.spacing-placeholder {
-    height: 60px;
-    margin-top: 1rem;
-}
+
 
 .signup-message {
     margin-top: 1rem;
