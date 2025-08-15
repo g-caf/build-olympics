@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/wireframe-attend.html",
+      "dest": "/wireframe-attend.html"
+    },
+    {
+      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|webp|ico))",
+      "dest": "/$1"
+    }
+  ]
+}
