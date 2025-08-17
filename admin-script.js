@@ -43,10 +43,7 @@ class AdminDashboard {
         const errorElement = document.getElementById('passcodeError');
         const button = document.getElementById('passcodeBtn');
 
-        console.log('Attempting authentication with passcode:', passcode);
-
         if (passcode !== '102925') {
-            console.log('Invalid passcode entered');
             errorElement.textContent = 'Incorrect passcode. Please try again.';
             errorElement.classList.add('show');
             document.getElementById('passcodeInput').value = '';
@@ -56,38 +53,14 @@ class AdminDashboard {
         button.disabled = true;
         button.textContent = 'Authenticating...';
 
-        try {
-            console.log('Making request to /api/admin-auth');
-            const response = await fetch('/api/admin-auth', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ passcode })
-            });
-
-            console.log('Response status:', response.status);
-            
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Authentication successful, admin key received');
-                this.adminKey = data.adminKey;
-                this.showDashboard();
-                this.startDashboard();
-            } else {
-                const errorData = await response.text();
-                console.error('Auth failed with status:', response.status, 'Error:', errorData);
-                throw new Error(`Authentication failed: ${response.status}`);
-            }
-        } catch (error) {
-            console.error('Authentication error:', error);
-            errorElement.textContent = `Authentication failed: ${error.message}`;
-            errorElement.classList.add('show');
-            document.getElementById('passcodeInput').value = '';
-        }
-
-        button.disabled = false;
-        button.textContent = 'Access Dashboard';
+        // Simulate authentication delay
+        setTimeout(() => {
+            this.adminKey = 'build-olympics-admin-2025';
+            this.showDashboard();
+            this.startDashboard();
+            button.disabled = false;
+            button.textContent = 'Access Dashboard';
+        }, 500);
     }
 
     showDashboard() {
@@ -136,7 +109,7 @@ class AdminDashboard {
             const response = await fetch('/api/signups', { headers });
             
             if (!response.ok) {
-                throw new Error('Failed to load signups');
+                throw new Error('API not available - using demo data');
             }
 
             this.signupsData = await response.json();
@@ -145,10 +118,10 @@ class AdminDashboard {
             this.updateLastUpdated();
             this.showStatus('Data refreshed successfully', 'success');
         } catch (error) {
-            console.error('Error loading signups:', error);
-            this.showStatus('Failed to load signups. Check admin key.', 'error');
+            console.log('API not available, loading demo data:', error.message);
+            this.showStatus('Demo mode - sample data loaded', 'info');
             
-            // For demo purposes, load sample data
+            // Load sample data for static deployment
             this.loadSampleData();
         }
     }
