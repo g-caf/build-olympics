@@ -65,13 +65,31 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'wireframe-index.html'));
 });
 
-// Admin dashboard route
+// Admin dashboard routes
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.get('/attend', (req, res) => {
+    res.sendFile(path.join(__dirname, 'attend.html'));
+});
+
+app.get('/terms', (req, res) => {
+    res.sendFile(path.join(__dirname, 'terms.html'));
+});
+
+// Handle SPA routing fallback - send index for any unmatched routes
+app.get('*', (req, res) => {
+    // Only serve index.html for routes that don't look like API calls or static assets
+    if (!req.path.startsWith('/api/') && !req.path.includes('.')) {
+        res.sendFile(path.join(__dirname, 'wireframe-index.html'));
+    } else {
+        res.status(404).json({ error: 'Not found' });
+    }
 });
 
 // API endpoint to handle email signups
