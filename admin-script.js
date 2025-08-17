@@ -43,7 +43,11 @@ class AdminDashboard {
         const errorElement = document.getElementById('passcodeError');
         const button = document.getElementById('passcodeBtn');
 
+        console.log('Attempting authentication with passcode:', passcode);
+
         if (passcode !== '102925') {
+            console.log('Invalid passcode entered');
+            errorElement.textContent = 'Incorrect passcode. Please try again.';
             errorElement.classList.add('show');
             document.getElementById('passcodeInput').value = '';
             return;
@@ -53,7 +57,7 @@ class AdminDashboard {
         button.textContent = 'Authenticating...';
 
         try {
-            // Get admin key from environment (this would need to be passed from server)
+            console.log('Making request to /api/admin-auth');
             const response = await fetch('/api/admin-auth', {
                 method: 'POST',
                 headers: {
@@ -62,16 +66,22 @@ class AdminDashboard {
                 body: JSON.stringify({ passcode })
             });
 
+            console.log('Response status:', response.status);
+            
             if (response.ok) {
                 const data = await response.json();
+                console.log('Authentication successful, admin key received');
                 this.adminKey = data.adminKey;
                 this.showDashboard();
                 this.startDashboard();
             } else {
-                throw new Error('Authentication failed');
+                const errorData = await response.text();
+                console.error('Auth failed with status:', response.status, 'Error:', errorData);
+                throw new Error(`Authentication failed: ${response.status}`);
             }
         } catch (error) {
-            console.error('Authentication failed:', error);
+            console.error('Authentication error:', error);
+            errorElement.textContent = `Authentication failed: ${error.message}`;
             errorElement.classList.add('show');
             document.getElementById('passcodeInput').value = '';
         }
