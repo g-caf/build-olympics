@@ -1,12 +1,33 @@
 // Passcode lock functionality
 const CORRECT_PASSCODE = '102925';
 const PASSCODE_STORAGE_KEY = 'buildOlympicsAccess';
+const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 function checkPasscodeAccess() {
-    const hasAccess = localStorage.getItem(PASSCODE_STORAGE_KEY) === 'true';
+    const sessionData = localStorage.getItem(PASSCODE_STORAGE_KEY);
     const lockScreen = document.getElementById('lockScreen');
     
-    if (hasAccess) {
+    let hasValidAccess = false;
+    
+    if (sessionData) {
+        try {
+            const parsed = JSON.parse(sessionData);
+            const now = Date.now();
+            
+            // Check if session hasn't expired
+            if (parsed.timestamp && (now - parsed.timestamp) < SESSION_DURATION) {
+                hasValidAccess = true;
+            } else {
+                // Session expired, clear storage
+                localStorage.removeItem(PASSCODE_STORAGE_KEY);
+            }
+        } catch (e) {
+            // Invalid format, clear storage
+            localStorage.removeItem(PASSCODE_STORAGE_KEY);
+        }
+    }
+    
+    if (hasValidAccess) {
         lockScreen.classList.add('hidden');
     } else {
         lockScreen.classList.remove('hidden');
@@ -36,8 +57,12 @@ function initializePasscodeForm() {
         const enteredPasscode = passcodeInput.value.trim();
         
         if (enteredPasscode === CORRECT_PASSCODE) {
-            // Correct passcode
-            localStorage.setItem(PASSCODE_STORAGE_KEY, 'true');
+            // Correct passcode - store with timestamp
+            const sessionData = {
+                authenticated: true,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(PASSCODE_STORAGE_KEY, JSON.stringify(sessionData));
             document.getElementById('lockScreen').classList.add('hidden');
             passcodeError.classList.remove('show');
             
@@ -62,10 +87,48 @@ function initializePasscodeForm() {
     });
 }
 
+// Add session extension functionality
+function extendSession() {
+    const sessionData = localStorage.getItem(PASSCODE_STORAGE_KEY);
+    if (sessionData) {
+        try {
+            const parsed = JSON.parse(sessionData);
+            parsed.timestamp = Date.now();
+            localStorage.setItem(PASSCODE_STORAGE_KEY, JSON.stringify(parsed));
+        } catch (e) {
+            // If parsing fails, clear storage
+            localStorage.removeItem(PASSCODE_STORAGE_KEY);
+        }
+    }
+}
+
+// Extend session on user activity
+function setupSessionExtension() {
+    const activities = ['click', 'keypress', 'scroll', 'mousemove'];
+    let lastActivity = Date.now();
+    
+    activities.forEach(activity => {
+        document.addEventListener(activity, () => {
+            const now = Date.now();
+            // Only extend session once every 5 minutes to avoid excessive writes
+            if (now - lastActivity > 5 * 60 * 1000) {
+                extendSession();
+                lastActivity = now;
+            }
+        });
+    });
+}
+
 // Initialize passcode functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     checkPasscodeAccess();
     initializePasscodeForm();
+    setupSessionExtension();
+    
+    // Check session validity every 30 minutes and recheck access
+    setInterval(() => {
+        checkPasscodeAccess();
+    }, 30 * 60 * 1000);
 });
 
 // Countdown to September 15th, 2025

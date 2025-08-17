@@ -36,6 +36,9 @@ class AdminDashboard {
         // Date inputs
         document.getElementById('startDate').addEventListener('change', () => this.applyFilters());
         document.getElementById('endDate').addEventListener('change', () => this.applyFilters());
+        
+        // Set up activity-based session extension
+        this.setupActivityExtension();
     }
 
     async authenticate() {
@@ -43,31 +46,59 @@ class AdminDashboard {
         const errorElement = document.getElementById('passcodeError');
         const button = document.getElementById('passcodeBtn');
 
-        if (passcode !== '102925') {
-            errorElement.textContent = 'Incorrect passcode. Please try again.';
+        if (!passcode) {
+            errorElement.textContent = 'Please enter a passcode.';
             errorElement.classList.add('show');
-            document.getElementById('passcodeInput').value = '';
             return;
         }
 
         button.disabled = true;
         button.textContent = 'Authenticating...';
+        errorElement.classList.remove('show');
 
-        // Simulate authentication delay
-        setTimeout(() => {
-            this.adminKey = 'build-olympics-admin-2025';
-            this.showDashboard();
-            this.startDashboard();
+        try {
+            const response = await fetch('/api/admin-auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ passcode })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                this.adminKey = data.adminKey;
+                this.showDashboard();
+                this.startDashboard();
+                this.showStatus('Authentication successful', 'success');
+            } else {
+                errorElement.textContent = 'Incorrect passcode. Please try again.';
+                errorElement.classList.add('show');
+                document.getElementById('passcodeInput').value = '';
+            }
+        } catch (error) {
+            console.error('Authentication error:', error);
+            errorElement.textContent = 'Authentication failed. Please try again.';
+            errorElement.classList.add('show');
+            document.getElementById('passcodeInput').value = '';
+        } finally {
             button.disabled = false;
             button.textContent = 'Access Dashboard';
-        }, 500);
+        }
     }
 
     showDashboard() {
         document.getElementById('lockScreen').classList.add('hidden');
         document.getElementById('dashboardContent').classList.remove('hidden');
-        sessionStorage.setItem('adminAuth', 'true');
-        sessionStorage.setItem('adminKey', this.adminKey);
+        
+        // Store admin session with timestamp for cross-tab persistence
+        const adminSession = {
+            authenticated: true,
+            adminKey: this.adminKey,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('adminAuth', JSON.stringify(adminSession));
     }
 
     startDashboard() {
@@ -79,8 +110,7 @@ class AdminDashboard {
     logout() {
         this.adminKey = null;
         this.clearAutoRefresh();
-        sessionStorage.removeItem('adminAuth');
-        sessionStorage.removeItem('adminKey');
+        localStorage.removeItem('adminAuth');
         document.getElementById('lockScreen').classList.remove('hidden');
         document.getElementById('dashboardContent').classList.add('hidden');
         document.getElementById('passcodeInput').value = '';
@@ -88,13 +118,28 @@ class AdminDashboard {
     }
 
     checkAuth() {
-        // Check if already authenticated
-        const savedAuth = sessionStorage.getItem('adminAuth');
-        const savedKey = sessionStorage.getItem('adminKey');
-        if (savedAuth === 'true' && savedKey) {
-            this.adminKey = savedKey;
-            this.showDashboard();
-            this.startDashboard();
+        // Check if already authenticated with expiration check
+        const sessionData = localStorage.getItem('adminAuth');
+        
+        if (sessionData) {
+            try {
+                const parsed = JSON.parse(sessionData);
+                const now = Date.now();
+                const ADMIN_SESSION_DURATION = 4 * 60 * 60 * 1000; // 4 hours for admin
+                
+                // Check if session hasn't expired
+                if (parsed.timestamp && (now - parsed.timestamp) < ADMIN_SESSION_DURATION && parsed.adminKey) {
+                    this.adminKey = parsed.adminKey;
+                    this.showDashboard();
+                    this.startDashboard();
+                } else {
+                    // Session expired, clear storage
+                    localStorage.removeItem('adminAuth');
+                }
+            } catch (e) {
+                // Invalid format, clear storage
+                localStorage.removeItem('adminAuth');
+            }
         }
     }
 
@@ -301,6 +346,11 @@ class AdminDashboard {
         this.refreshInterval = setInterval(() => {
             this.loadSignups();
         }, 30000); // Refresh every 30 seconds
+        
+        // Set up session validation check
+        this.sessionCheckInterval = setInterval(() => {
+            this.validateSession();
+        }, 60000); // Check every minute
     }
 
     clearAutoRefresh() {
@@ -308,6 +358,60 @@ class AdminDashboard {
             clearInterval(this.refreshInterval);
             this.refreshInterval = null;
         }
+        if (this.sessionCheckInterval) {
+            clearInterval(this.sessionCheckInterval);
+            this.sessionCheckInterval = null;
+        }
+    }
+    
+    validateSession() {
+        const sessionData = localStorage.getItem('adminAuth');
+        if (sessionData) {
+            try {
+                const parsed = JSON.parse(sessionData);
+                const now = Date.now();
+                const ADMIN_SESSION_DURATION = 4 * 60 * 60 * 1000; // 4 hours
+                
+                if (!parsed.timestamp || (now - parsed.timestamp) >= ADMIN_SESSION_DURATION) {
+                    // Session expired, logout
+                    this.logout();
+                    this.showStatus('Session expired. Please log in again.', 'warning');
+                }
+            } catch (e) {
+                // Invalid session data, logout
+                this.logout();
+            }
+        }
+    }
+    
+    extendAdminSession() {
+        const sessionData = localStorage.getItem('adminAuth');
+        if (sessionData) {
+            try {
+                const parsed = JSON.parse(sessionData);
+                parsed.timestamp = Date.now();
+                localStorage.setItem('adminAuth', JSON.stringify(parsed));
+            } catch (e) {
+                // Invalid format, clear and logout
+                this.logout();
+            }
+        }
+    }
+    
+    setupActivityExtension() {
+        const activities = ['click', 'keypress', 'scroll', 'mousemove'];
+        let lastActivity = Date.now();
+        
+        activities.forEach(activity => {
+            document.addEventListener(activity, () => {
+                const now = Date.now();
+                // Only extend session once every 10 minutes to avoid excessive writes
+                if (now - lastActivity > 10 * 60 * 1000) {
+                    this.extendAdminSession();
+                    lastActivity = now;
+                }
+            });
+        });
     }
 
     showStatus(message, type = 'info') {
