@@ -8,6 +8,30 @@
     <link rel="stylesheet" href="wireframe-styles.css">
 </head>
 <body>
+    <!-- Lock Screen Overlay -->
+    <div class="lock-screen" id="lockScreen">
+        <div class="lock-form">
+            <h2>Build Olympics</h2>
+            <p>Please enter the passcode to access the site</p>
+            <form id="passcodeForm">
+                <input 
+                    type="password" 
+                    id="passcodeInput" 
+                    class="passcode-input" 
+                    placeholder="Enter passcode"
+                    maxlength="6"
+                    required
+                >
+                <button type="submit" class="passcode-button" id="passcodeButton">
+                    Enter Passcode
+                </button>
+                <div class="passcode-error" id="passcodeError">
+                    Incorrect passcode. Please try again.
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1 class="title">Build Olympics</h1>

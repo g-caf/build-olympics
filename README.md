@@ -8,6 +8,10 @@ A cosmic-themed landing page for the Build Olympics developer competition with e
 - 📧 Email signup collection with backend storage
 - 🎨 Sophisticated cosmic design with green color scheme
 - 📱 Fully responsive design
+- 🔒 Admin dashboard with passcode protection
+- 📊 Real-time signup tracking and analytics
+- 📄 CSV export functionality
+- ✉️ Automatic email notifications
 - 🚀 Ready for deployment on Render
 
 ## Tech Stack
@@ -57,13 +61,26 @@ A cosmic-themed landing page for the Build Olympics developer competition with e
 
 2. **Set environment variables in Render**
    - `ADMIN_KEY`: Secret key for accessing signup data
-   - `EMAIL_HOST`, `EMAIL_USER`, `EMAIL_PASS`: Email configuration
+   - `EMAIL_HOST`, `EMAIL_USER`, `EMAIL_PASS`, `NOTIFY_EMAIL`: Email configuration
+
+## Admin Dashboard
+
+Access the admin dashboard at:
+- `/admin` or `/dashboard`
+- **Passcode**: 102925
+- Features include:
+  - Real-time signup statistics
+  - Search and filter capabilities
+  - Date range filtering
+  - CSV export
+  - Auto-refresh every 30 seconds
 
 ## API Endpoints
 
 - `POST /api/signup` - Submit email signup
 - `GET /api/signups` - Get all signups (requires admin key)
 - `GET /api/count` - Get total signup count
+- `POST /api/admin-auth` - Admin authentication
 
 ## Email Automation
 
@@ -91,14 +108,15 @@ curl -H "admin-key: YOUR_ADMIN_KEY" https://your-app.onrender.com/api/signups
 ## File Structure
 
 ```
-├── index.html          # Main landing page
-├── styles.css          # Cosmic-themed styles
-├── script.js           # Frontend JavaScript
-├── server.js           # Express.js backend
-├── scripts/
-│   └── send-notification.js  # Email automation
-├── package.json        # Node.js dependencies
-└── README.md          # This file
+├── wireframe-index.html    # Main landing page
+├── wireframe-styles.css    # Clean wireframe styles
+├── admin.html             # Admin dashboard
+├── admin-styles.css       # Admin dashboard styles
+├── admin-script.js        # Admin dashboard JavaScript
+├── server.js              # Express.js backend
+├── signups.db             # SQLite database
+├── package.json           # Node.js dependencies
+└── README.md             # This file
 ```
 
 ## Contributing

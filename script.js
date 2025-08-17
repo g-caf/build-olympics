@@ -1,3 +1,73 @@
+// Passcode lock functionality
+const CORRECT_PASSCODE = '102925';
+const PASSCODE_STORAGE_KEY = 'buildOlympicsAccess';
+
+function checkPasscodeAccess() {
+    const hasAccess = localStorage.getItem(PASSCODE_STORAGE_KEY) === 'true';
+    const lockScreen = document.getElementById('lockScreen');
+    
+    if (hasAccess) {
+        lockScreen.classList.add('hidden');
+    } else {
+        lockScreen.classList.remove('hidden');
+        // Focus on passcode input
+        setTimeout(() => {
+            const passcodeInput = document.getElementById('passcodeInput');
+            if (passcodeInput) {
+                passcodeInput.focus();
+            }
+        }, 100);
+    }
+}
+
+function initializePasscodeForm() {
+    const passcodeForm = document.getElementById('passcodeForm');
+    const passcodeInput = document.getElementById('passcodeInput');
+    const passcodeButton = document.getElementById('passcodeButton');
+    const passcodeError = document.getElementById('passcodeError');
+    
+    if (!passcodeForm || !passcodeInput || !passcodeButton || !passcodeError) {
+        return;
+    }
+    
+    passcodeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const enteredPasscode = passcodeInput.value.trim();
+        
+        if (enteredPasscode === CORRECT_PASSCODE) {
+            // Correct passcode
+            localStorage.setItem(PASSCODE_STORAGE_KEY, 'true');
+            document.getElementById('lockScreen').classList.add('hidden');
+            passcodeError.classList.remove('show');
+            
+            // Clear the input for security
+            passcodeInput.value = '';
+        } else {
+            // Incorrect passcode
+            passcodeError.classList.add('show');
+            passcodeInput.value = '';
+            passcodeInput.focus();
+            
+            // Hide error after 3 seconds
+            setTimeout(() => {
+                passcodeError.classList.remove('show');
+            }, 3000);
+        }
+    });
+    
+    // Clear error when user starts typing again
+    passcodeInput.addEventListener('input', function() {
+        passcodeError.classList.remove('show');
+    });
+}
+
+// Initialize passcode functionality when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    checkPasscodeAccess();
+    initializePasscodeForm();
+});
+
 // Countdown to September 15th, 2025
 const targetDate = new Date('September 15, 2025 00:00:00').getTime();
 

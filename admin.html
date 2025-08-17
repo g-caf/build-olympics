@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Olympics Admin Dashboard</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Lock Screen -->
+    <div id="lockScreen" class="lock-screen">
+        <div class="lock-form">
+            <h2>Build Olympics Admin</h2>
+            <p>Enter passcode to access dashboard</p>
+            <input type="password" id="passcodeInput" class="passcode-input" placeholder="Enter passcode" maxlength="6">
+            <button id="passcodeBtn" class="passcode-button">Access Dashboard</button>
+            <div id="passcodeError" class="passcode-error">Incorrect passcode. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboardContent" class="dashboard hidden">
+        <header class="admin-header">
+            <div class="admin-container">
+                <div class="admin-title-section">
+                    <h1 class="admin-title">Build Olympics</h1>
+                    <p class="admin-subtitle">Admin Dashboard</p>
+                </div>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="admin-container">
+                <!-- Statistics Cards -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalSignups">0</div>
+                            <div class="stat-label">Total Signups</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="todaySignups">0</div>
+                            <div class="stat-label">Today</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="weekSignups">0</div>
+                            <div class="stat-label">This Week</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="lastUpdated">--:--</div>
+                            <div class="stat-label">Last Updated</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Controls Section -->
+                <section class="controls-section">
+                    <div class="controls-grid">
+                        <div class="search-container">
+                            <input type="text" id="searchInput" class="search-input"
+                                placeholder="Search email addresses...">
+                        </div>
+                        <div class="date-filters">
+                            <input type="date" id="startDate" class="date-input">
+                            <input type="date" id="endDate" class="date-input">
+                            <button id="filterBtn" class="filter-btn">Filter</button>
+                            <button id="clearFiltersBtn" class="clear-btn">Clear</button>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="refreshBtn" class="refresh-btn">Refresh</button>
+                            <button id="exportBtn" class="export-btn">Export CSV</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Signups Table -->
+                <section class="signups-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Email Signups</h2>
+                        <div class="results-info">
+                            <span id="resultsCount">0 results</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="signups-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email Address</th>
+                                    <th>Signup Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="signupsTableBody">
+                                <tr class="loading-row">
+                                    <td colspan="5" class="loading-cell">Loading signups...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+
+</html>

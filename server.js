@@ -3,10 +3,25 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Email configuration
+let transporter = null;
+if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    transporter = nodemailer.createTransporter({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT || 587,
+        secure: process.env.EMAIL_SECURE === 'true',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+}
 
 // Middleware
 app.use(helmet({
@@ -50,6 +65,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'wireframe-index.html'));
 });
 
+// Admin dashboard route
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 // API endpoint to handle email signups
 app.post('/api/signup', (req, res) => {
     const { email } = req.body;
@@ -68,6 +92,32 @@ app.post('/api/signup', (req, res) => {
         }
         
         console.log(`New signup: ${email} (ID: ${this.lastID})`);
+        
+        // Send email notification if configured
+        if (transporter && process.env.NOTIFY_EMAIL) {
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: process.env.NOTIFY_EMAIL,
+                subject: 'New Build Olympics Signup',
+                html: `
+                    <h2>New Build Olympics Signup</h2>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Signup Time:</strong> ${new Date().toLocaleString()}</p>
+                    <p><strong>Signup ID:</strong> ${this.lastID}</p>
+                `
+            };
+            
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Email notification failed:', error);
+                } else {
+                    console.log('Email notification sent:', info.response);
+                    // Update notification status in database
+                    db.run('UPDATE signups SET notified = TRUE WHERE id = ?', [this.lastID]);
+                }
+            });
+        }
+        
         res.json({ 
             message: 'Successfully signed up!', 
             id: this.lastID 
@@ -99,6 +149,20 @@ app.get('/api/count', (req, res) => {
             return res.status(500).json({ error: 'Internal server error' });
         }
         res.json({ count: row.count });
+    });
+});
+
+// Admin authentication endpoint
+app.post('/api/admin-auth', (req, res) => {
+    const { passcode } = req.body;
+    
+    if (passcode !== '102925') {
+        return res.status(401).json({ error: 'Invalid passcode' });
+    }
+    
+    res.json({ 
+        adminKey: process.env.ADMIN_KEY || 'admin-key-placeholder',
+        message: 'Authentication successful' 
     });
 });
 
