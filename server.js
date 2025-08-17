@@ -128,7 +128,8 @@ app.post('/api/signup', (req, res) => {
 // API endpoint to get all signups (for admin)
 app.get('/api/signups', (req, res) => {
     const adminKey = req.headers['admin-key'];
-    if (!adminKey || adminKey !== process.env.ADMIN_KEY) {
+    const expectedKey = process.env.ADMIN_KEY || 'build-olympics-admin-2025';
+    if (!adminKey || adminKey !== expectedKey) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
     
@@ -161,7 +162,7 @@ app.post('/api/admin-auth', (req, res) => {
     }
     
     res.json({ 
-        adminKey: process.env.ADMIN_KEY || 'admin-key-placeholder',
+        adminKey: process.env.ADMIN_KEY || 'build-olympics-admin-2025',
         message: 'Authentication successful' 
     });
 });
