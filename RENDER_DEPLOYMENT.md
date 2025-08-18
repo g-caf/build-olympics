@@ -97,7 +97,7 @@ Test these endpoints:
 
 ### 1. Configure Custom Domain in Render
 1. Go to Service → Settings → Custom Domains
-2. Add your domain: `buildolympics.com`
+2. Add your domain: `amp-arena.com`
 3. Note the CNAME target provided by Render
 
 ### 2. Configure DNS in Cloudflare

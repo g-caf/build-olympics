@@ -17,7 +17,7 @@ When setting up your Render service, configure these environment variables in th
 | `EMAIL_SECURE` | `false` | Use STARTTLS (not direct SSL) |
 | `EMAIL_USER` | `your-email@gmail.com` | Your Gmail address |
 | `EMAIL_PASS` | `[Gmail App Password]` | 16-character Gmail app password |
-| `NOTIFY_EMAIL` | `admin@build-olympics.com` | Email to receive signup notifications |
+| `NOTIFY_EMAIL` | `admin@amp-arena.com` | Email to receive signup notifications |
 
 ### Gmail SMTP Configuration Steps
 
@@ -42,12 +42,12 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Step 1: Remove Vercel Domain Configuration
 
 1. Go to Vercel dashboard → Your project → Settings → Domains
-2. Remove `build-olympics.com` from Vercel
+2. Remove `amp-arena.com` from Vercel
 3. Note: Keep the project active until Render is fully configured
 
 ### Step 2: Configure DNS in Cloudflare
 
-1. **Login to Cloudflare** and select your `build-olympics.com` domain
+1. **Login to Cloudflare** and select your `amp-arena.com` domain
 2. **Update DNS Records:**
 
    Replace existing records with:
@@ -71,8 +71,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Step 3: Configure Custom Domain in Render
 
 1. In Render dashboard → Your service → Settings → Custom Domains
-2. Add domain: `build-olympics.com`
-3. Add domain: `www.build-olympics.com`
+2. Add domain: `amp-arena.com`
+3. Add domain: `www.amp-arena.com`
 4. Render will automatically provision SSL certificates
 
 ## 3. Render Service Configuration
@@ -172,8 +172,8 @@ Your current [`render.yaml`](file:///Users/adrienne.caffarel/Amp%20Projects%20/B
    - Verify email contains correct signup details
 
 ### Domain Switch Testing (After DNS Propagation)
-- [ ] `https://build-olympics.com` loads homepage
-- [ ] `https://www.build-olympics.com` redirects properly
+- [ ] `https://amp-arena.com` loads homepage
+- [ ] `https://www.amp-arena.com` redirects properly
 - [ ] SSL certificate is valid (green lock icon)
 - [ ] All functionality works on production domain
 
@@ -244,17 +244,17 @@ After deployment, run these tests:
 
 ```bash
 # Test signup functionality
-curl -X POST https://build-olympics.com/api/signup \
+curl -X POST https://amp-arena.com/api/signup \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com"}'
 
 # Test admin authentication
-curl -X POST https://build-olympics.com/api/admin-auth \
+curl -X POST https://amp-arena.com/api/admin-auth \
   -H "Content-Type: application/json" \
   -d '{"passcode":"102925"}'
 
 # Test signup count
-curl https://build-olympics.com/api/count
+curl https://amp-arena.com/api/count
 ```
 
 ## 8. Rollback Plan

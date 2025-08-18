@@ -29,7 +29,7 @@
 - [ ] `EMAIL_SECURE` = `false`
 - [ ] `EMAIL_USER` = `your-email@gmail.com`
 - [ ] `EMAIL_PASS` = `[16-char-app-password]`
-- [ ] `NOTIFY_EMAIL` = `admin@build-olympics.com`
+- [ ] `NOTIFY_EMAIL` = `admin@amp-arena.com`
 
 ### Persistent Storage
 - [ ] Add persistent disk: `build-olympics-db`
@@ -62,13 +62,13 @@
 - [ ] Enable "Always Use HTTPS"
 
 ### Custom Domain in Render
-- [ ] Add custom domain: `build-olympics.com`
-- [ ] Add custom domain: `www.build-olympics.com`
+- [ ] Add custom domain: `amp-arena.com`
+- [ ] Add custom domain: `www.amp-arena.com`
 - [ ] Wait for SSL certificate provisioning
 
 ### Domain Testing (24-48 hours later)
-- [ ] Test `https://build-olympics.com`
-- [ ] Test `https://www.build-olympics.com`
+- [ ] Test `https://amp-arena.com`
+- [ ] Test `https://www.amp-arena.com`
 - [ ] Verify SSL certificate (green lock)
 - [ ] Test all functionality on production domain
 
@@ -119,7 +119,7 @@
 ## Key URLs
 
 - **Render Service:** `https://your-service.onrender.com`
-- **Admin Dashboard:** `https://build-olympics.com/admin`
+- **Admin Dashboard:** `https://amp-arena.com/admin`
 - **Admin Passcode:** `102925`
 - **GitHub Repo:** `https://github.com/g-caf/build-olympics`
 
