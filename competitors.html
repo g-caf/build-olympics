@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amp Arena - Competitor Dashboard</title>
+    <link rel="icon" type="image/png" href="Style=white.png">
+    <link rel="stylesheet" href="competitors-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Lock Screen -->
+    <div id="lockScreen" class="lock-screen">
+        <div class="lock-form">
+            <h2>Competitor Dashboard</h2>
+            <p>Enter competitor admin passcode to access</p>
+            <input type="password" id="passcodeInput" class="passcode-input" placeholder="Enter passcode" maxlength="10">
+            <button id="passcodeBtn" class="passcode-button">Access Dashboard</button>
+            <div id="passcodeError" class="passcode-error">Incorrect passcode. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboardContent" class="dashboard hidden">
+        <header class="competitors-header">
+            <div class="competitors-container">
+                <div class="header-content">
+                    <div class="title-section">
+                        <h1 class="competitors-title">Amp Arena</h1>
+                        <p class="competitors-subtitle">Competitor Management</p>
+                    </div>
+                    <div class="header-actions">
+                        <a href="/admin" class="nav-link">Admin Dashboard</a>
+                        <button id="logoutBtn" class="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="competitors-main">
+            <div class="competitors-container">
+                <!-- Statistics Cards -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalCompetitors">0</div>
+                            <div class="stat-label">Total Competitors</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="pendingCount">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="qualifiedCount">0</div>
+                            <div class="stat-label">Qualified</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="finalistCount">0</div>
+                            <div class="stat-label">Finalists</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Controls Section -->
+                <section class="controls-section">
+                    <div class="controls-grid">
+                        <div class="search-filter-group">
+                            <div class="search-container">
+                                <input type="text" id="searchInput" class="search-input"
+                                    placeholder="Search by name, email, GitHub, or Twitter...">
+                            </div>
+                            <div class="filter-container">
+                                <select id="statusFilter" class="status-filter">
+                                    <option value="">All Statuses</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="finalist">Finalist</option>
+                                    <option value="eliminated">Eliminated</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="addCompetitorBtn" class="add-competitor-btn">Add Competitor</button>
+                            <button id="refreshBtn" class="refresh-btn">Refresh</button>
+                            <button id="exportBtn" class="export-btn">Export CSV</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Competitors Grid -->
+                <section class="competitors-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Competitors</h2>
+                        <div class="results-info">
+                            <span id="resultsCount">0 competitors</span>
+                        </div>
+                    </div>
+
+                    <div id="competitorsGrid" class="competitors-grid">
+                        <div class="loading-message">
+                            Loading competitors...
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Add Competitor Modal -->
+        <div id="addCompetitorModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Competitor</h3>
+                    <button class="modal-close" id="closeModalBtn">&times;</button>
+                </div>
+                <form id="addCompetitorForm" class="competitor-form">
+                    <div class="form-group">
+                        <label for="competitorEmail">Email *</label>
+                        <input type="email" id="competitorEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitorName">Full Name *</label>
+                        <input type="text" id="competitorName" name="full_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="competitorGithub">GitHub Username</label>
+                        <input type="text" id="competitorGithub" name="github_username" placeholder="e.g. johndoe">
+                    </div>
+                    <div class="form-group">
+                        <label for="competitorTwitter">Twitter Username</label>
+                        <input type="text" id="competitorTwitter" name="twitter_username" placeholder="e.g. johndoe">
+                    </div>
+                    <div class="form-group">
+                        <label for="competitorPhoto">Profile Photo URL</label>
+                        <input type="url" id="competitorPhoto" name="profile_photo_url" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="competitorBio">Bio</label>
+                        <textarea id="competitorBio" name="bio" rows="3" placeholder="Brief bio or description..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="cancel-btn" id="cancelModalBtn">Cancel</button>
+                        <button type="submit" class="submit-btn">Add Competitor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script src="competitors-script.js"></script>
+</body>
+
+</html>

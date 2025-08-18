@@ -5,10 +5,10 @@ require('dotenv').config();
 // Email templates
 const EMAIL_TEMPLATES = {
     welcome: {
-        subject: 'Welcome to Build Olympics! 🏗️',
+        subject: 'Welcome to Amp Arena! 🏗️',
         html: `
             <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000; color: #fff; padding: 40px 20px;">
-                <h1 style="color: #4a7c59; text-align: center; font-size: 2.5em; margin-bottom: 30px;">BUILD OLYMPICS</h1>
+                <h1 style="color: #4a7c59; text-align: center; font-size: 2.5em; margin-bottom: 30px;">AMP ARENA</h1>
                 <p style="font-size: 18px; line-height: 1.6;">Welcome to the ultimate developer competition!</p>
                 <p>You're now registered for updates about:</p>
                 <ul style="font-size: 16px; line-height: 1.8;">
@@ -25,10 +25,10 @@ const EMAIL_TEMPLATES = {
     },
     
     reminder: {
-        subject: 'Build Olympics Qualifying Starts Tomorrow! 🚀',
+        subject: 'Amp Arena Qualifying Starts Tomorrow! 🚀',
         html: `
             <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000; color: #fff; padding: 40px 20px;">
-                <h1 style="color: #4a7c59; text-align: center; font-size: 2.5em; margin-bottom: 30px;">BUILD OLYMPICS</h1>
+                <h1 style="color: #4a7c59; text-align: center; font-size: 2.5em; margin-bottom: 30px;">AMP ARENA</h1>
                 <p style="font-size: 20px; text-align: center; margin-bottom: 30px;"><strong>The first qualifying challenge opens tomorrow!</strong></p>
                 <p>Are you ready to compete for your chance at the $1,000,000 prize?</p>
                 <div style="text-align: center; margin: 30px 0;">
@@ -83,7 +83,7 @@ class EmailNotifier {
         }
 
         const mailOptions = {
-            from: `Build Olympics <${process.env.EMAIL_USER}>`,
+            from: `Amp Arena <${process.env.EMAIL_USER}>`,
             to,
             subject: emailTemplate.subject,
             html: emailTemplate.html,

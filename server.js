@@ -4,6 +4,8 @@ const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -23,6 +25,42 @@ if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) 
     });
 }
 
+// File upload configuration
+const uploadsDir = path.join(__dirname, 'uploads/competitors');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadsDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|pdf|zip|doc|docx/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb(new Error('Only PDF, ZIP, DOC, DOCX, JPEG, JPG, and PNG files are allowed'));
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    },
+    fileFilter: fileFilter
+});
+
 // Middleware
 app.use(helmet({
     contentSecurityPolicy: {
@@ -40,6 +78,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Initialize SQLite database
 const db = new sqlite3.Database('./signups.db', (err) => {
@@ -57,12 +96,54 @@ const db = new sqlite3.Database('./signups.db', (err) => {
                 notified BOOLEAN DEFAULT FALSE
             )
         `);
+        
+        // Create competitors table if it doesn't exist
+        db.run(`
+            CREATE TABLE IF NOT EXISTS competitors (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                full_name TEXT NOT NULL,
+                github_username TEXT,
+                twitter_username TEXT,
+                profile_photo_url TEXT,
+                bio TEXT,
+                submission_files TEXT, -- JSON array stored as string
+                status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'qualified', 'finalist', 'eliminated')),
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
     }
 });
+
+// Competitor authentication middleware
+const authenticateCompetitorAdmin = (req, res, next) => {
+    const adminKey = req.headers['competitor-admin-key'];
+    const expectedKey = process.env.COMPETITOR_ADMIN_PASSCODE;
+    
+    if (!expectedKey) {
+        return res.status(500).json({ error: 'Competitor admin authentication not configured' });
+    }
+    
+    if (!adminKey || adminKey !== expectedKey) {
+        return res.status(401).json({ error: 'Unauthorized - Invalid competitor admin key' });
+    }
+    
+    next();
+};
 
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'wireframe-index.html'));
+});
+
+// Competitor dashboard routes
+app.get('/competitors', (req, res) => {
+    res.sendFile(path.join(__dirname, 'competitors.html'));
+});
+
+app.get('/competitors/profile/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, 'competitor-profile.html'));
 });
 
 // Admin dashboard routes
@@ -92,6 +173,252 @@ app.get('*', (req, res) => {
     }
 });
 
+// =================================
+// COMPETITOR API ENDPOINTS
+// =================================
+
+// Competitor admin authentication endpoint
+app.post('/api/competitor-admin-auth', (req, res) => {
+    const { passcode } = req.body;
+    const expectedPasscode = process.env.COMPETITOR_ADMIN_PASSCODE;
+    
+    if (!expectedPasscode) {
+        return res.status(500).json({ error: 'Competitor admin authentication not configured' });
+    }
+    
+    if (passcode !== expectedPasscode) {
+        return res.status(401).json({ error: 'Invalid passcode' });
+    }
+    
+    res.json({ 
+        competitorAdminKey: expectedPasscode,
+        message: 'Competitor admin authentication successful' 
+    });
+});
+
+// POST /api/competitors - Create new competitor
+app.post('/api/competitors', (req, res) => {
+    const { email, full_name, github_username, twitter_username, profile_photo_url, bio } = req.body;
+    
+    if (!email || !full_name) {
+        return res.status(400).json({ error: 'Email and full name are required' });
+    }
+    
+    if (!email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email address required' });
+    }
+    
+    const submissionFiles = JSON.stringify([]);
+    
+    db.run(
+        `INSERT INTO competitors (email, full_name, github_username, twitter_username, profile_photo_url, bio, submission_files) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [email, full_name, github_username || null, twitter_username || null, profile_photo_url || null, bio || null, submissionFiles],
+        function(err) {
+            if (err) {
+                if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+                    return res.status(409).json({ error: 'Email already registered as competitor' });
+                }
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            
+            console.log(`New competitor: ${email} (ID: ${this.lastID})`);
+            res.json({ 
+                message: 'Competitor registered successfully!', 
+                id: this.lastID 
+            });
+        }
+    );
+});
+
+// GET /api/competitors - List all competitors (admin auth required)
+app.get('/api/competitors', authenticateCompetitorAdmin, (req, res) => {
+    const { status, limit = 50, offset = 0 } = req.query;
+    
+    let query = 'SELECT * FROM competitors';
+    let params = [];
+    
+    if (status) {
+        query += ' WHERE status = ?';
+        params.push(status);
+    }
+    
+    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    params.push(parseInt(limit), parseInt(offset));
+    
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        // Parse submission_files JSON for each competitor
+        const competitors = rows.map(competitor => ({
+            ...competitor,
+            submission_files: JSON.parse(competitor.submission_files || '[]')
+        }));
+        
+        res.json(competitors);
+    });
+});
+
+// GET /api/competitors/:id - Get single competitor profile
+app.get('/api/competitors/:id', (req, res) => {
+    const { id } = req.params;
+    
+    db.get('SELECT * FROM competitors WHERE id = ?', [id], (err, row) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        if (!row) {
+            return res.status(404).json({ error: 'Competitor not found' });
+        }
+        
+        // Parse submission_files JSON
+        const competitor = {
+            ...row,
+            submission_files: JSON.parse(row.submission_files || '[]')
+        };
+        
+        res.json(competitor);
+    });
+});
+
+// PUT /api/competitors/:id - Update competitor profile
+app.put('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
+    const { id } = req.params;
+    const { email, full_name, github_username, twitter_username, profile_photo_url, bio, status } = req.body;
+    
+    if (!email || !full_name) {
+        return res.status(400).json({ error: 'Email and full name are required' });
+    }
+    
+    if (!email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email address required' });
+    }
+    
+    if (status && !['pending', 'qualified', 'finalist', 'eliminated'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status value' });
+    }
+    
+    db.run(
+        `UPDATE competitors 
+         SET email = ?, full_name = ?, github_username = ?, twitter_username = ?, 
+             profile_photo_url = ?, bio = ?, status = COALESCE(?, status), updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [email, full_name, github_username || null, twitter_username || null, 
+         profile_photo_url || null, bio || null, status || null, id],
+        function(err) {
+            if (err) {
+                if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+                    return res.status(409).json({ error: 'Email already in use by another competitor' });
+                }
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'Competitor not found' });
+            }
+            
+            console.log(`Updated competitor ID: ${id}`);
+            res.json({ message: 'Competitor updated successfully' });
+        }
+    );
+});
+
+// DELETE /api/competitors/:id - Remove competitor
+app.delete('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
+    const { id } = req.params;
+    
+    // First get the competitor to delete their files
+    db.get('SELECT submission_files FROM competitors WHERE id = ?', [id], (err, row) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        if (!row) {
+            return res.status(404).json({ error: 'Competitor not found' });
+        }
+        
+        // Delete files if they exist
+        try {
+            const files = JSON.parse(row.submission_files || '[]');
+            files.forEach(filePath => {
+                const fullPath = path.join(__dirname, filePath);
+                if (fs.existsSync(fullPath)) {
+                    fs.unlinkSync(fullPath);
+                }
+            });
+        } catch (error) {
+            console.error('Error deleting files:', error);
+        }
+        
+        // Delete competitor from database
+        db.run('DELETE FROM competitors WHERE id = ?', [id], function(err) {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            
+            console.log(`Deleted competitor ID: ${id}`);
+            res.json({ message: 'Competitor deleted successfully' });
+        });
+    });
+});
+
+// POST /api/competitors/:id/upload - Handle file uploads
+app.post('/api/competitors/:id/upload', upload.array('files', 5), (req, res) => {
+    const { id } = req.params;
+    
+    if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ error: 'No files uploaded' });
+    }
+    
+    // Get current competitor to update their submission files
+    db.get('SELECT submission_files FROM competitors WHERE id = ?', [id], (err, row) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        if (!row) {
+            return res.status(404).json({ error: 'Competitor not found' });
+        }
+        
+        try {
+            const currentFiles = JSON.parse(row.submission_files || '[]');
+            const newFilePaths = req.files.map(file => `uploads/competitors/${file.filename}`);
+            const updatedFiles = [...currentFiles, ...newFilePaths];
+            
+            // Update database with new file paths
+            db.run(
+                'UPDATE competitors SET submission_files = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+                [JSON.stringify(updatedFiles), id],
+                function(err) {
+                    if (err) {
+                        console.error('Database error:', err);
+                        return res.status(500).json({ error: 'Internal server error' });
+                    }
+                    
+                    console.log(`Files uploaded for competitor ID: ${id}`);
+                    res.json({ 
+                        message: 'Files uploaded successfully',
+                        files: newFilePaths
+                    });
+                }
+            );
+        } catch (error) {
+            console.error('Error processing files:', error);
+            res.status(500).json({ error: 'Error processing uploaded files' });
+        }
+    });
+});
+
 // API endpoint to handle email signups
 app.post('/api/signup', (req, res) => {
     const { email } = req.body;
@@ -116,9 +443,9 @@ app.post('/api/signup', (req, res) => {
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: process.env.NOTIFY_EMAIL,
-                subject: 'New Build Olympics Signup',
+                subject: 'New Amp Arena Signup',
                 html: `
-                    <h2>New Build Olympics Signup</h2>
+                    <h2>New Amp Arena Signup</h2>
                     <p><strong>Email:</strong> ${email}</p>
                     <p><strong>Signup Time:</strong> ${new Date().toLocaleString()}</p>
                     <p><strong>Signup ID:</strong> ${this.lastID}</p>
@@ -198,5 +525,5 @@ process.on('SIGINT', () => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Build Olympics wireframe server running on port ${PORT}`);
+    console.log(`Amp Arena wireframe server running on port ${PORT}`);
 });

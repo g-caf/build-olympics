@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showMessage('Success! You\'ll be notified about Build Olympics updates.', 'success');
+                    showMessage('Success! You\'ll be notified about Amp Arena updates.', 'success');
                     emailInput.value = '';
                 } else {
                     showMessage(data.error || 'Something went wrong. Please try again.', 'error');

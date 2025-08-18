@@ -278,7 +278,7 @@ header {
 }
 
 .title::before {
-    content: 'BUILD OLYMPICS';
+    content: 'AMP ARENA';
     position: absolute;
     top: 0;
     left: 0;

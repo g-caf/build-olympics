@@ -1,7 +1,7 @@
 {
   "name": "build-olympics",
   "version": "1.0.0",
-  "description": "Build Olympics landing page with contact collection",
+  "description": "Amp Arena landing page with contact collection",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,7 +13,8 @@
     "helmet": "^7.1.0",
     "sqlite3": "^5.1.6",
     "nodemailer": "^6.9.8",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "multer": "^2.0.0-rc.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

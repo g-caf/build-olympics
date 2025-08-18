@@ -1,6 +1,6 @@
-# Build Olympics Landing Page 🏗️
+# Amp Arena Landing Page 🏗️
 
-A cosmic-themed landing page for the Build Olympics developer competition with email signup functionality.
+A cosmic-themed landing page for the Amp Arena developer competition with email signup functionality.
 
 ## Features
 
@@ -54,14 +54,30 @@ A cosmic-themed landing page for the Build Olympics developer competition with e
 
 ### Production Deployment (Render)
 
+📋 **Complete deployment guide**: See [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)  
+✅ **Pre-deployment checklist**: See [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)  
+🧪 **Deployment validation**: Run `node validate-deployment.js [YOUR_URL]`
+
+**Quick Render Setup:**
 1. **Connect your GitHub repo to Render**
    - Service Type: Web Service
    - Build Command: `npm install`
    - Start Command: `npm start`
 
-2. **Set environment variables in Render**
+2. **Set environment variables in Render** (see .env.example for all options)
    - `ADMIN_KEY`: Secret key for accessing signup data
    - `EMAIL_HOST`, `EMAIL_USER`, `EMAIL_PASS`, `NOTIFY_EMAIL`: Email configuration
+   - `NODE_ENV`: production
+
+**Features included in production deployment:**
+- ✅ Real database with SQLite (persistent storage on Render disk)
+- ✅ Server-side admin authentication (not just client-side)  
+- ✅ Email notifications via SMTP (Gmail recommended)
+- ✅ Clean URL routing (/admin, /terms, /attend)
+- ✅ Lock screen protection (passcode: 102925)
+- ✅ Security headers and CSP
+- ✅ Automatic SSL via Render
+- ✅ Custom domain support via Cloudflare
 
 ## Admin Dashboard
 

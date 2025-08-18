@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: build-olympics
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ADMIN_KEY
+        generateValue: true
+        sync: false
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_SECURE
+        value: false
+    disk:
+      name: build-olympics-db
+      mountPath: /opt/render/project/src
+      sizeGB: 1
+
+# Optional: Database service if you want PostgreSQL instead of SQLite
+# databases:
+#   - name: build-olympics-db
+#     databaseName: build_olympics
+#     user: build_olympics_user

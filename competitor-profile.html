@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amp Arena - Competitor Profile</title>
+    <link rel="icon" type="image/png" href="Style=white.png">
+    <link rel="stylesheet" href="competitor-profile-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Lock Screen -->
+    <div id="lockScreen" class="lock-screen">
+        <div class="lock-form">
+            <h2>Competitor Profile</h2>
+            <p>Enter competitor admin passcode to access</p>
+            <input type="password" id="passcodeInput" class="passcode-input" placeholder="Enter passcode" maxlength="10">
+            <button id="passcodeBtn" class="passcode-button">Access Profile</button>
+            <div id="passcodeError" class="passcode-error">Incorrect passcode. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Profile Content -->
+    <div id="profileContent" class="profile hidden">
+        <header class="profile-header">
+            <div class="profile-container">
+                <div class="header-content">
+                    <div class="navigation">
+                        <a href="/competitors" class="back-link">← Back to Competitors</a>
+                        <h1 class="profile-title">Competitor Profile</h1>
+                    </div>
+                    <div class="header-actions">
+                        <button id="editToggleBtn" class="edit-toggle-btn">Edit Profile</button>
+                        <button id="logoutBtn" class="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="profile-main">
+            <div class="profile-container">
+                <!-- Profile Overview -->
+                <section class="profile-overview">
+                    <div class="competitor-card">
+                        <div class="competitor-photo">
+                            <img id="competitorPhoto" src="" alt="Competitor Photo" class="photo-img">
+                            <div class="photo-placeholder">
+                                <span>No Photo</span>
+                            </div>
+                        </div>
+                        <div class="competitor-info">
+                            <div class="competitor-header">
+                                <h2 id="competitorName" class="competitor-name">Loading...</h2>
+                                <div class="status-badge" id="competitorStatus">pending</div>
+                            </div>
+                            <div class="competitor-contact">
+                                <p id="competitorEmail" class="competitor-email">email@example.com</p>
+                                <div class="social-links">
+                                    <a id="githubLink" href="" target="_blank" class="social-link github-link hidden">
+                                        GitHub Profile
+                                    </a>
+                                    <a id="twitterLink" href="" target="_blank" class="social-link twitter-link hidden">
+                                        Twitter Profile
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="competitor-meta">
+                                <span class="meta-item">
+                                    <strong>Joined:</strong> <span id="competitorJoined">--</span>
+                                </span>
+                                <span class="meta-item">
+                                    <strong>Updated:</strong> <span id="competitorUpdated">--</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Edit Form (Initially Hidden) -->
+                <section id="editSection" class="edit-section hidden">
+                    <div class="edit-card">
+                        <h3>Edit Profile</h3>
+                        <form id="editProfileForm" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editName">Full Name *</label>
+                                    <input type="text" id="editName" name="full_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editEmail">Email *</label>
+                                    <input type="email" id="editEmail" name="email" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editGithub">GitHub Username</label>
+                                    <input type="text" id="editGithub" name="github_username" placeholder="e.g. johndoe">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editTwitter">Twitter Username</label>
+                                    <input type="text" id="editTwitter" name="twitter_username" placeholder="e.g. johndoe">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editPhoto">Profile Photo URL</label>
+                                <input type="url" id="editPhoto" name="profile_photo_url" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label for="editStatus">Status</label>
+                                <select id="editStatus" name="status">
+                                    <option value="pending">Pending</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="finalist">Finalist</option>
+                                    <option value="eliminated">Eliminated</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editBio">Bio</label>
+                                <textarea id="editBio" name="bio" rows="4" placeholder="Brief bio or description..."></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancelEditBtn" class="cancel-btn">Cancel</button>
+                                <button type="submit" class="save-btn">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Bio Section -->
+                <section class="bio-section">
+                    <div class="content-card">
+                        <h3>Bio</h3>
+                        <div id="competitorBio" class="bio-content">
+                            <p class="empty-bio">No bio available</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- File Submissions -->
+                <section class="submissions-section">
+                    <div class="content-card">
+                        <div class="submissions-header">
+                            <h3>File Submissions</h3>
+                            <button id="uploadBtn" class="upload-btn">Upload Files</button>
+                        </div>
+                        <div id="submissionsList" class="submissions-list">
+                            <div class="empty-submissions">
+                                <p>No files submitted yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Actions Section -->
+                <section class="actions-section">
+                    <div class="content-card">
+                        <h3>Actions</h3>
+                        <div class="actions-grid">
+                            <button id="deleteCompetitorBtn" class="delete-btn">Delete Competitor</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- File Upload Modal -->
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Upload Files</h3>
+                    <button class="modal-close" id="closeUploadModalBtn">&times;</button>
+                </div>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <div class="upload-icon">📁</div>
+                        <p>Drag and drop files here or click to select</p>
+                        <p class="upload-hint">Supported formats: PDF, ZIP, DOC, DOCX, JPEG, JPG, PNG (Max 10MB each)</p>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.zip,.doc,.docx,.jpeg,.jpg,.png">
+                    </div>
+                </div>
+                <div id="uploadProgress" class="upload-progress hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="progress-text">Uploading files...</p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" id="cancelUploadBtn">Cancel</button>
+                    <button type="button" class="upload-submit-btn" id="uploadSubmitBtn" disabled>Upload Selected Files</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Delete Competitor</h3>
+                    <button class="modal-close" id="closeDeleteModalBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this competitor? This action cannot be undone and will also remove all their uploaded files.</p>
+                    <div class="delete-confirmation">
+                        <p><strong>Competitor:</strong> <span id="deleteCompetitorName">--</span></p>
+                        <p><strong>Email:</strong> <span id="deleteCompetitorEmail">--</span></p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" id="cancelDeleteBtn">Cancel</button>
+                    <button type="button" class="delete-confirm-btn" id="confirmDeleteBtn">Delete Competitor</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script src="competitor-profile-script.js"></script>
+</body>
+
+</html>
