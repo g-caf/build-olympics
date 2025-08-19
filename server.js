@@ -78,6 +78,10 @@ app.use(helmet({
     },
 }));
 app.use(cors());
+
+// Special handling for Stripe webhook - must be before express.json()
+app.use('/api/stripe/webhook', express.raw({type: 'application/json'}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.'));
@@ -685,20 +689,43 @@ app.get('/api/tickets', authenticateAdmin, (req, res) => {
 });
 
 // POST /api/stripe/webhook - Stripe webhook endpoint
-app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), (req, res) => {
+app.post('/api/stripe/webhook', (req, res) => {
     const sig = req.headers['stripe-signature'];
+    
+    if (!sig) {
+        console.error('Missing stripe-signature header');
+        return res.status(400).send('Missing stripe-signature header');
+    }
     
     // Stripe webhook verification
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET ? process.env.STRIPE_WEBHOOK_SECRET.trim() : null;
     
+    if (!endpointSecret) {
+        console.error('Missing STRIPE_WEBHOOK_SECRET');
+        return res.status(500).send('Webhook secret not configured');
+    }
+    
     try {
-        // Temporarily skip signature verification to avoid server crashes
-        // TODO: Fix webhook signature verification later
-        console.log('Stripe webhook received - processing without verification');
+        const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        
+        // Handle the event
+        switch (event.type) {
+            case 'payment_intent.succeeded':
+                const paymentIntent = event.data.object;
+                console.log('PaymentIntent succeeded:', paymentIntent.id);
+                // Auto-confirm ticket creation could be added here
+                break;
+            case 'payment_intent.payment_failed':
+                console.log('PaymentIntent failed:', event.data.object.id);
+                break;
+            default:
+                console.log(`Unhandled event type: ${event.type}`);
+        }
+        
         res.json({received: true});
     } catch (err) {
-        console.error('Webhook processing error:', err);
+        console.error('Webhook signature verification failed:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 });
