@@ -29,13 +29,17 @@ async function fetchStripeConfig() {
 }
 
 function initializeStripe() {
-    if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === 'pk_test_placeholder') {
+    console.log('Initializing Stripe with key:', STRIPE_PUBLIC_KEY ? 'Key loaded' : 'No key found');
+    console.log('Key starts with:', STRIPE_PUBLIC_KEY ? STRIPE_PUBLIC_KEY.substring(0, 8) : 'null');
+    
+    if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === 'pk_test_placeholder' || STRIPE_PUBLIC_KEY.trim() === '') {
         // Show placeholder when no Stripe key is configured
         const cardElement = document.getElementById('card-element');
         cardElement.innerHTML = `
             <div style="padding: 1rem; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; color: #6c757d; text-align: center;">
                 <p><strong>Payment form will appear here</strong></p>
                 <p>Stripe integration ready - add your publishable key to activate payments</p>
+                <p style="font-size: 12px; color: #999;">Debug: Key status = ${STRIPE_PUBLIC_KEY ? 'present but invalid' : 'missing'}</p>
             </div>
         `;
         return;

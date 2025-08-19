@@ -204,9 +204,12 @@ app.get('/attend', (req, res) => {
     
     // Inject the Stripe key into the HTML
     const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || '';
+    console.log('Stripe key injection:', stripeKey ? `Key present (${stripeKey.substring(0, 8)}...)` : 'No key found');
+    
     html = html.replace('</head>', `
     <script>
         window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
+        console.log('Injected Stripe key:', '${stripeKey ? stripeKey.substring(0, 8) + '...' : 'empty'}');
     </script>
     </head>`);
     
