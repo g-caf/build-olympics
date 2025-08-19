@@ -25,16 +25,25 @@ function generateTicketEmailTemplate(ticketData) {
     let ampLogoBase64 = '';
 
     try {
+        console.log('Looking for PNG logo at:', pngLogoPath);
+        console.log('PNG file exists:', fs.existsSync(pngLogoPath));
+        
         if (fs.existsSync(pngLogoPath)) {
             const logoBuffer = fs.readFileSync(pngLogoPath);
             ampLogoBase64 = `data:image/png;base64,${logoBuffer.toString('base64')}`;
-            console.log('Using PNG logo for better email client compatibility');
-        } else if (fs.existsSync(webpLogoPath)) {
-            const logoBuffer = fs.readFileSync(webpLogoPath);
-            ampLogoBase64 = `data:image/webp;base64,${logoBuffer.toString('base64')}`;
-            console.log('Using WebP logo as fallback');
+            console.log('PNG logo loaded successfully, size:', logoBuffer.length, 'bytes');
         } else {
-            console.error('No logo files found for email template');
+            console.log('Looking for WebP logo at:', webpLogoPath);
+            console.log('WebP file exists:', fs.existsSync(webpLogoPath));
+            
+            if (fs.existsSync(webpLogoPath)) {
+                const logoBuffer = fs.readFileSync(webpLogoPath);
+                ampLogoBase64 = `data:image/webp;base64,${logoBuffer.toString('base64')}`;
+                console.log('WebP logo loaded as fallback, size:', logoBuffer.length, 'bytes');
+            } else {
+                console.error('No logo files found for email template');
+                console.log('Directory contents:', fs.readdirSync(__dirname).filter(f => f.includes('mp') || f.includes('tyle')));
+            }
         }
     } catch (error) {
         console.error('Error loading Amp logo:', error);
@@ -156,11 +165,11 @@ function generateTicketEmailTemplate(ticketData) {
         
         .cta-button {
             display: inline-block;
-            background: #ffffff;
-            color: #1a1a1a;
+            background: #ffffff !important;
+            color: #1a1a1a !important;
             border: 2px solid #e0e0e0;
             padding: 15px 30px;
-            text-decoration: none;
+            text-decoration: none !important;
             border-radius: 8px;
             font-weight: 600;
             margin: 20px 0;
