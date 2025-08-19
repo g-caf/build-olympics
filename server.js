@@ -510,25 +510,22 @@ app.post('/api/tickets/purchase', async (req, res) => {
     }
     
     try {
-        // Note: Stripe integration would be here
-        // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-        // const paymentIntent = await stripe.paymentIntents.create({
-        //     amount: 2000, // $20.00 in cents
-        //     currency: 'usd',
-        //     metadata: {
-        //         email: email,
-        //         event: 'Build Olympics 2025'
-        //     }
-        // });
+        // Initialize Stripe
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: 2000, // $20.00 in cents
+            currency: 'usd',
+            metadata: {
+                email: email,
+                event: 'Build Olympics 2025'
+            }
+        });
         
-        // For now, return a placeholder response
         res.json({
             success: true,
-            message: 'Stripe integration required - payment intent would be created here',
-            // client_secret: paymentIntent.client_secret,
-            // payment_intent_id: paymentIntent.id
-            client_secret: 'pi_placeholder_client_secret',
-            payment_intent_id: 'pi_placeholder_' + Date.now()
+            message: 'Payment intent created successfully',
+            client_secret: paymentIntent.client_secret,
+            payment_intent_id: paymentIntent.id
         });
     } catch (error) {
         console.error('Payment intent creation error:', error);
@@ -691,25 +688,25 @@ app.get('/api/tickets', authenticateAdmin, (req, res) => {
 app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), (req, res) => {
     const sig = req.headers['stripe-signature'];
     
-    // Note: Stripe webhook verification would be here
-    // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-    // const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    // Stripe webhook verification
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
     
     try {
-        // const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
         
         // Handle the event
-        // switch (event.type) {
-        //     case 'payment_intent.succeeded':
-        //         const paymentIntent = event.data.object;
-        //         console.log('PaymentIntent was successful!');
-        //         // Auto-confirm ticket here if needed
-        //         break;
-        //     default:
-        //         console.log(`Unhandled event type ${event.type}`);
-        // }
+        switch (event.type) {
+            case 'payment_intent.succeeded':
+                const paymentIntent = event.data.object;
+                console.log('PaymentIntent was successful!', paymentIntent.id);
+                // Auto-confirm ticket here if needed
+                break;
+            default:
+                console.log(`Unhandled event type ${event.type}`);
+        }
         
-        console.log('Stripe webhook received (placeholder)');
+        console.log('Stripe webhook processed successfully');
         res.json({received: true});
     } catch (err) {
         console.error('Webhook signature verification failed:', err);
