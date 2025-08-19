@@ -1,4 +1,4 @@
-// Admin Dashboard JavaScript
+// Attendee Dashboard JavaScript
 class AdminDashboard {
     constructor() {
         this.signupsData = [];
@@ -71,7 +71,7 @@ class AdminDashboard {
                 this.adminKey = data.adminKey;
                 this.showDashboard();
                 this.startDashboard();
-                this.showStatus('Authentication successful', 'success');
+                this.showStatus('Attendee dashboard authentication successful', 'success');
             } else {
                 errorElement.textContent = 'Incorrect passcode. Please try again.';
                 errorElement.classList.add('show');

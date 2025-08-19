@@ -69,7 +69,7 @@ For email notifications to work:
 ### 2. Verify Deployment
 Test these endpoints:
 - `https://your-service.onrender.com/` - Main landing page
-- `https://your-service.onrender.com/admin` - Admin dashboard
+- `https://your-service.onrender.com/attendees` - Attendee dashboard
 - `https://your-service.onrender.com/terms` - Terms page
 - `https://your-service.onrender.com/attend` - Attend page
 
@@ -81,7 +81,7 @@ Test these endpoints:
 - Verify lock screen covers entire site
 
 #### Admin Dashboard
-1. Go to `/admin`
+1. Go to `/attendees`
 2. Enter passcode: `102925`
 3. Verify server-side authentication works
 4. Check signup data displays correctly
@@ -129,7 +129,7 @@ Test these endpoints:
 - [ ] Database stores signups correctly
 - [ ] Email notifications are sent
 - [ ] Admin dashboard authentication works
-- [ ] All routes accessible (`/`, `/admin`, `/terms`, `/attend`)
+- [ ] All routes accessible (`/`, `/attendees`, `/terms`, `/attend`)
 - [ ] Lock screen functions properly
 - [ ] Clean URLs work without `.html` extensions
 

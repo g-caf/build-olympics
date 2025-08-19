@@ -104,7 +104,7 @@ class RenderVerifier {
         console.log('\n📄 Testing Page Routes...');
         
         const routes = [
-            { path: '/admin', name: 'Admin Dashboard' },
+            { path: '/attendees', name: 'Attendee Dashboard' },
             { path: '/terms', name: 'Terms Page' },
             { path: '/attend', name: 'Attend Page' }
         ];

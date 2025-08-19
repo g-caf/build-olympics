@@ -79,7 +79,7 @@
 - [ ] Admin dashboard accessible
 - [ ] Email notifications arrive
 - [ ] Database persistence confirmed
-- [ ] All routes working (`/`, `/admin`, `/terms`, `/attend`)
+- [ ] All routes working (`/`, `/attendees`, `/terms`, `/attend`)
 
 ### Performance and Security
 - [ ] Page load times acceptable
@@ -119,7 +119,7 @@
 ## Key URLs
 
 - **Render Service:** `https://your-service.onrender.com`
-- **Admin Dashboard:** `https://amp-arena.com/admin`
+- **Attendee Dashboard:** `https://amp-arena.com/attendees`
 - **Admin Passcode:** `102925`
 - **GitHub Repo:** `https://github.com/g-caf/build-olympics`
 

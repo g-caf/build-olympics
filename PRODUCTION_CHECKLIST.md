@@ -51,7 +51,7 @@
 - [ ] Correct passcode (102925) grants access
 - [ ] Incorrect passcode shows error
 - [ ] Access persists on page refresh
-- [ ] Works across all pages (/, /admin, /terms, /attend)
+- [ ] Works across all pages (/, /attendees, /terms, /attend)
 
 **Main Page Signup**
 - [ ] Email signup form accepts valid emails
@@ -61,7 +61,7 @@
 - [ ] Database stores signup correctly
 
 **Admin Dashboard**
-- [ ] `/admin` route loads properly
+- [ ] `/attendees` route loads properly
 - [ ] Passcode authentication works (102925)
 - [ ] Server-side admin authentication validates correctly
 - [ ] Dashboard shows real signup data
@@ -77,7 +77,7 @@
 
 ### 7. Routing Tests ✅
 - [ ] `/` - Main landing page loads
-- [ ] `/admin` - Admin dashboard loads
+- [ ] `/attendees` - Attendee dashboard loads
 - [ ] `/terms` - Terms page loads (if exists)
 - [ ] `/attend` - Attend page loads (if exists)
 - [ ] Clean URLs work without `.html` extensions

@@ -73,7 +73,7 @@ A cosmic-themed landing page for the Amp Arena developer competition with email 
 - ✅ Real database with SQLite (persistent storage on Render disk)
 - ✅ Server-side admin authentication (not just client-side)  
 - ✅ Email notifications via SMTP (Gmail recommended)
-- ✅ Clean URL routing (/admin, /terms, /attend)
+- ✅ Clean URL routing (/attendees, /terms, /attend)
 - ✅ Lock screen protection (passcode: 102925)
 - ✅ Security headers and CSP
 - ✅ Automatic SSL via Render
@@ -82,7 +82,7 @@ A cosmic-themed landing page for the Amp Arena developer competition with email 
 ## Admin Dashboard
 
 Access the admin dashboard at:
-- `/admin` or `/dashboard`
+- `/attendees` or `/dashboard`
 - **Passcode**: 102925
 - Features include:
   - Real-time signup statistics
@@ -96,7 +96,7 @@ Access the admin dashboard at:
 - `POST /api/signup` - Submit email signup
 - `GET /api/signups` - Get all signups (requires admin key)
 - `GET /api/count` - Get total signup count
-- `POST /api/admin-auth` - Admin authentication
+- `POST /api/admin-auth` - Attendee dashboard authentication
 
 ## Email Automation
 

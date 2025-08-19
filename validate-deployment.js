@@ -29,7 +29,7 @@ class DeploymentValidator {
         const tests = [
             // Basic connectivity
             { name: 'Main page loads', test: () => this.testPageLoad('/') },
-            { name: 'Admin page loads', test: () => this.testPageLoad('/admin') },
+            { name: 'Attendee Dashboard page loads', test: () => this.testPageLoad('/attendees') },
             { name: 'Terms page loads', test: () => this.testPageLoad('/terms') },
             { name: 'Attend page loads', test: () => this.testPageLoad('/attend') },
             

@@ -150,13 +150,13 @@ Your current [`render.yaml`](file:///Users/adrienne.caffarel/Amp%20Projects%20/B
 - [ ] Homepage loads correctly at service URL
 - [ ] Email signup form works
 - [ ] Database stores signups properly
-- [ ] Admin dashboard accessible at `/admin`
+- [ ] Attendee dashboard accessible at `/attendees`
 - [ ] Terms page loads at `/terms`
 - [ ] Attend page loads at `/attend`
 
 #### Admin Dashboard Testing
 1. **Access Admin Dashboard:**
-   - Navigate to `https://your-service.onrender.com/admin`
+   - Navigate to `https://your-service.onrender.com/attendees`
    - Use passcode: `102925`
    - Verify admin key is returned
 
