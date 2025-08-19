@@ -227,24 +227,6 @@ app.get('/api/stripe/config', (req, res) => {
     });
 });
 
-// Handle SPA routing fallback - send index for any unmatched routes
-app.get('*', (req, res) => {
-    // Only serve index.html for routes that don't look like API calls or static assets
-    // and don't match our specific routes
-    const path = req.path;
-    if (!path.startsWith('/api/') &&
-        !path.includes('.') &&
-        path !== '/attendees' &&
-        path !== '/competitors' &&
-        path !== '/dashboard' &&
-        path !== '/attend' &&
-        path !== '/terms') {
-        res.sendFile(path.join(__dirname, 'index.html'));
-    } else {
-        res.status(404).json({ error: 'Not found' });
-    }
-});
-
 // =================================
 // COMPETITOR API ENDPOINTS
 // =================================
@@ -819,6 +801,25 @@ app.get('/api/tickets/count', (req, res) => {
         }
         res.json({ count: row.count });
     });
+});
+
+// Handle SPA routing fallback - send index for any unmatched routes
+// This MUST be last, after all API routes
+app.get('*', (req, res) => {
+    // Only serve index.html for routes that don't look like API calls or static assets
+    // and don't match our specific routes
+    const urlPath = req.path;
+    if (!urlPath.startsWith('/api/') &&
+        !urlPath.includes('.') &&
+        urlPath !== '/attendees' &&
+        urlPath !== '/competitors' &&
+        urlPath !== '/dashboard' &&
+        urlPath !== '/attend' &&
+        urlPath !== '/terms') {
+        res.sendFile(path.join(__dirname, 'index.html'));
+    } else {
+        res.status(404).json({ error: 'Not found' });
+    }
 });
 
 // Graceful shutdown

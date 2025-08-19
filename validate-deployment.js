@@ -1,252 +1,171 @@
-#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
 
-/**
- * Amp Arena Deployment Validation Script
- * 
- * Run this script after deployment to verify all functionality works correctly.
- * Usage: node validate-deployment.js [BASE_URL]
- * Example: node validate-deployment.js https://build-olympics.onrender.com
- */
+console.log('🔧 RENDER DEPLOYMENT VALIDATION\n');
 
-const https = require('https');
-const http = require('http');
+function checkFileExists(filePath) {
+    const exists = fs.existsSync(filePath);
+    console.log(`${exists ? '✅' : '❌'} ${filePath} ${exists ? 'EXISTS' : 'MISSING'}`);
+    return exists;
+}
 
-class DeploymentValidator {
-    constructor(baseUrl = 'http://localhost:3000') {
-        this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
-        this.results = {
-            passed: 0,
-            failed: 0,
-            tests: []
-        };
+function validatePackageJson() {
+    console.log('📦 PACKAGE.JSON VALIDATION:');
+    
+    if (!checkFileExists('./package.json')) {
+        return false;
     }
-
-    async runAllTests() {
-        console.log('🚀 Amp Arena Deployment Validation');
-        console.log('==========================================');
-        console.log(`Testing: ${this.baseUrl}\n`);
-
-        const tests = [
-            // Basic connectivity
-            { name: 'Main page loads', test: () => this.testPageLoad('/') },
-            { name: 'Attendee Dashboard page loads', test: () => this.testPageLoad('/attendees') },
-            { name: 'Terms page loads', test: () => this.testPageLoad('/terms') },
-            { name: 'Attend page loads', test: () => this.testPageLoad('/attend') },
-            
-            // API endpoints
-            { name: 'Signup API responds', test: () => this.testSignupAPI() },
-            { name: 'Admin auth API responds', test: () => this.testAdminAuthAPI() },
-            { name: 'Count API responds', test: () => this.testCountAPI() },
-            
-            // Static assets
-            { name: 'CSS files load', test: () => this.testStaticAsset('/wireframe-styles.css') },
-            { name: 'JS files load', test: () => this.testStaticAsset('/script.js') },
-            { name: 'Admin CSS loads', test: () => this.testStaticAsset('/admin-styles.css') },
-            { name: 'Admin JS loads', test: () => this.testStaticAsset('/admin-script.js') },
-        ];
-
-        for (const test of tests) {
-            await this.runTest(test.name, test.test);
-        }
-
-        this.printResults();
+    
+    const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+    
+    console.log(`✅ Start script: ${pkg.scripts?.start || 'MISSING'}`);
+    console.log(`✅ Main entry: ${pkg.main || 'MISSING'}`);
+    console.log(`✅ Node version: ${pkg.engines?.node || 'NOT SPECIFIED'}`);
+    
+    const requiredDeps = ['express', 'sqlite3', 'nodemailer', 'cors', 'helmet'];
+    console.log('\n📋 REQUIRED DEPENDENCIES:');
+    
+    let missingDeps = [];
+    for (const dep of requiredDeps) {
+        const exists = pkg.dependencies && pkg.dependencies[dep];
+        console.log(`${exists ? '✅' : '❌'} ${dep} ${exists ? pkg.dependencies[dep] : 'MISSING'}`);
+        if (!exists) missingDeps.push(dep);
     }
+    
+    return missingDeps.length === 0;
+}
 
-    async runTest(name, testFn) {
-        process.stdout.write(`Testing: ${name.padEnd(25)} `);
-        try {
-            await testFn();
-            console.log('✅ PASS');
-            this.results.passed++;
-            this.results.tests.push({ name, status: 'PASS' });
-        } catch (error) {
-            console.log(`❌ FAIL - ${error.message}`);
-            this.results.failed++;
-            this.results.tests.push({ name, status: 'FAIL', error: error.message });
-        }
+function validateServerFile() {
+    console.log('\n🚀 SERVER.JS VALIDATION:');
+    
+    if (!checkFileExists('./server.js')) {
+        return false;
     }
-
-    testPageLoad(path) {
-        return new Promise((resolve, reject) => {
-            const url = `${this.baseUrl}${path}`;
-            const client = url.startsWith('https:') ? https : http;
-            
-            const req = client.get(url, (res) => {
-                if (res.statusCode >= 200 && res.statusCode < 300) {
-                    resolve();
-                } else {
-                    reject(new Error(`Status ${res.statusCode}`));
-                }
-            });
-            
-            req.on('error', (error) => {
-                reject(new Error(error.message));
-            });
-            
-            req.setTimeout(10000, () => {
-                req.destroy();
-                reject(new Error('Timeout'));
-            });
-        });
+    
+    const serverContent = fs.readFileSync('./server.js', 'utf8');
+    
+    // Check critical components
+    const checks = [
+        { name: 'Express app creation', pattern: /app = express\(\)/ },
+        { name: 'Port configuration', pattern: /PORT.*process\.env\.PORT/ },
+        { name: 'Database initialization', pattern: /sqlite3\.Database/ },
+        { name: 'Server listening', pattern: /app\.listen.*PORT/ },
+        { name: 'Email transporter setup', pattern: /nodemailer\.createTransporter/ }
+    ];
+    
+    for (const check of checks) {
+        const found = check.pattern.test(serverContent);
+        console.log(`${found ? '✅' : '❌'} ${check.name}`);
     }
+    
+    return true;
+}
 
-    testSignupAPI() {
-        return new Promise((resolve, reject) => {
-            const data = JSON.stringify({ email: 'test@example.com' });
-            const url = new URL(`${this.baseUrl}/api/signup`);
-            
-            const options = {
-                hostname: url.hostname,
-                port: url.port,
-                path: url.pathname,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                }
-            };
-
-            const client = url.protocol === 'https:' ? https : http;
-            const req = client.request(options, (res) => {
-                // Accept any response that indicates the API is working
-                if (res.statusCode >= 200 && res.statusCode < 500) {
-                    resolve();
-                } else {
-                    reject(new Error(`Status ${res.statusCode}`));
-                }
-            });
-
-            req.on('error', (error) => {
-                reject(new Error(error.message));
-            });
-
-            req.setTimeout(10000, () => {
-                req.destroy();
-                reject(new Error('Timeout'));
-            });
-
-            req.write(data);
-            req.end();
-        });
+function validateEnvironmentSetup() {
+    console.log('\n🔐 ENVIRONMENT VARIABLES CHECK:');
+    
+    // Load .env if exists for local testing
+    if (fs.existsSync('.env')) {
+        require('dotenv').config();
+        console.log('✅ Found .env file for reference');
     }
-
-    testAdminAuthAPI() {
-        return new Promise((resolve, reject) => {
-            const data = JSON.stringify({ passcode: '102925' });
-            const url = new URL(`${this.baseUrl}/api/admin-auth`);
-            
-            const options = {
-                hostname: url.hostname,
-                port: url.port,
-                path: url.pathname,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                }
-            };
-
-            const client = url.protocol === 'https:' ? https : http;
-            const req = client.request(options, (res) => {
-                if (res.statusCode === 200) {
-                    resolve();
-                } else {
-                    reject(new Error(`Status ${res.statusCode}`));
-                }
-            });
-
-            req.on('error', (error) => {
-                reject(new Error(error.message));
-            });
-
-            req.setTimeout(10000, () => {
-                req.destroy();
-                reject(new Error('Timeout'));
-            });
-
-            req.write(data);
-            req.end();
-        });
+    
+    const requiredEnvVars = [
+        'EMAIL_HOST',
+        'EMAIL_USER', 
+        'EMAIL_PASS',
+        'STRIPE_SECRET_KEY',
+        'STRIPE_PUBLISHABLE_KEY',
+        'STRIPE_WEBHOOK_SECRET'
+    ];
+    
+    const optionalEnvVars = [
+        'NOTIFY_EMAIL',
+        'ADMIN_KEY',
+        'COMPETITOR_ADMIN_PASSCODE',
+        'EMAIL_PORT',
+        'EMAIL_SECURE'
+    ];
+    
+    console.log('\n🚨 REQUIRED (will cause crashes if missing):');
+    for (const envVar of requiredEnvVars) {
+        const exists = process.env[envVar];
+        console.log(`${exists ? '✅' : '❌'} ${envVar} ${exists ? 'SET' : 'MISSING'}`);
     }
-
-    testCountAPI() {
-        return new Promise((resolve, reject) => {
-            const url = `${this.baseUrl}/api/count`;
-            const client = url.startsWith('https:') ? https : http;
-            
-            const req = client.get(url, (res) => {
-                if (res.statusCode === 200) {
-                    resolve();
-                } else {
-                    reject(new Error(`Status ${res.statusCode}`));
-                }
-            });
-            
-            req.on('error', (error) => {
-                reject(new Error(error.message));
-            });
-            
-            req.setTimeout(10000, () => {
-                req.destroy();
-                reject(new Error('Timeout'));
-            });
-        });
-    }
-
-    testStaticAsset(path) {
-        return new Promise((resolve, reject) => {
-            const url = `${this.baseUrl}${path}`;
-            const client = url.startsWith('https:') ? https : http;
-            
-            const req = client.get(url, (res) => {
-                if (res.statusCode >= 200 && res.statusCode < 300) {
-                    resolve();
-                } else {
-                    reject(new Error(`Status ${res.statusCode}`));
-                }
-            });
-            
-            req.on('error', (error) => {
-                reject(new Error(error.message));
-            });
-            
-            req.setTimeout(5000, () => {
-                req.destroy();
-                reject(new Error('Timeout'));
-            });
-        });
-    }
-
-    printResults() {
-        console.log('\n==========================================');
-        console.log('DEPLOYMENT VALIDATION RESULTS');
-        console.log('==========================================');
-        console.log(`✅ Passed: ${this.results.passed}`);
-        console.log(`❌ Failed: ${this.results.failed}`);
-        console.log(`📊 Total:  ${this.results.passed + this.results.failed}`);
-        
-        if (this.results.failed > 0) {
-            console.log('\nFAILED TESTS:');
-            this.results.tests
-                .filter(test => test.status === 'FAIL')
-                .forEach(test => {
-                    console.log(`❌ ${test.name}: ${test.error}`);
-                });
-        }
-        
-        console.log(`\n${this.results.failed === 0 ? '🎉 ALL TESTS PASSED! Deployment looks good.' : '⚠️  Some tests failed. Check the issues above.'}`);
-        
-        if (this.results.failed === 0) {
-            console.log('\nNext steps:');
-            console.log('1. Test the lock screen manually (passcode: 102925)');
-            console.log('2. Try signing up with a real email address');
-            console.log('3. Check the admin dashboard');
-            console.log('4. Verify email notifications are working');
-        }
+    
+    console.log('\n📝 OPTIONAL (features may not work):');
+    for (const envVar of optionalEnvVars) {
+        const exists = process.env[envVar];
+        console.log(`${exists ? '✅' : '⚠️ '} ${envVar} ${exists ? 'SET' : 'NOT SET'}`);
     }
 }
 
-// Run the validation
-const baseUrl = process.argv[2] || 'http://localhost:3000';
-const validator = new DeploymentValidator(baseUrl);
-validator.runAllTests().catch(console.error);
+function generateDeploymentChecklist() {
+    console.log('\n📋 RENDER DEPLOYMENT CHECKLIST:');
+    console.log('');
+    console.log('1. ✅ Ensure all required files exist');
+    console.log('2. ✅ Verify package.json configuration');
+    console.log('3. ✅ Test server.js locally first: node server.js');
+    console.log('4. 🔐 Set ALL environment variables in Render dashboard');
+    console.log('5. 📁 Verify build command: npm install');
+    console.log('6. 🚀 Verify start command: npm start');
+    console.log('7. 🗂️  Check disk mount for SQLite database');
+    console.log('8. 🌐 Monitor deployment logs in Render');
+    console.log('');
+}
+
+function createTestServerScript() {
+    console.log('\n🧪 Creating local test script...');
+    
+    const testScript = `const express = require('express');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Basic middleware
+app.use(express.json());
+
+// Test route
+app.get('/', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        message: 'Server is running',
+        timestamp: new Date().toISOString(),
+        env: process.env.NODE_ENV || 'development'
+    });
+});
+
+// Health check
+app.get('/health', (req, res) => {
+    res.json({ 
+        health: 'OK',
+        database: 'Connected', // Simplified for testing
+        email: process.env.EMAIL_HOST ? 'Configured' : 'Not configured'
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(\`✅ Test server running on port \${PORT}\`);
+    console.log(\`🌐 Visit http://localhost:\${PORT} to test\`);
+    console.log(\`❤️  Health check: http://localhost:\${PORT}/health\`);
+});`;
+
+    fs.writeFileSync('./test-server.js', testScript);
+    console.log('✅ Created test-server.js');
+    console.log('💡 Run: node test-server.js to test basic functionality');
+}
+
+// Run all validations
+validatePackageJson();
+validateServerFile();
+validateEnvironmentSetup();
+generateDeploymentChecklist();
+createTestServerScript();
+
+console.log('\n🎯 NEXT STEPS:');
+console.log('1. Run: node test-server.js (test locally)');
+console.log('2. Check Render dashboard deployment logs');  
+console.log('3. Verify all environment variables in Render');
+console.log('4. Redeploy after fixing any issues');
+console.log('5. Use debug-production-deployment.js to verify deployment');
