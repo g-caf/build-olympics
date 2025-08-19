@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 // Fetch Stripe configuration from server
 async function fetchStripeConfig() {
-    try {
-        const response = await fetch('/api/stripe/config');
-        const config = await response.json();
-        STRIPE_PUBLIC_KEY = config.publishableKey;
-    } catch (error) {
-        console.error('Failed to fetch Stripe configuration:', error);
-        STRIPE_PUBLIC_KEY = null;
+    // Use key injected by server
+    STRIPE_PUBLIC_KEY = window.STRIPE_PUBLISHABLE_KEY || null;
+    
+    if (!STRIPE_PUBLIC_KEY) {
+        console.error('No Stripe publishable key found');
+    } else {
+        console.log('Stripe key loaded successfully');
     }
 }
 

@@ -198,7 +198,19 @@ app.get('/admin', (req, res) => {
 });
 
 app.get('/attend', (req, res) => {
-    res.sendFile(path.join(__dirname, 'attend.html'));
+    // Read the HTML file and inject Stripe key
+    const fs = require('fs');
+    let html = fs.readFileSync(path.join(__dirname, 'attend.html'), 'utf8');
+    
+    // Inject the Stripe key into the HTML
+    const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || '';
+    html = html.replace('</head>', `
+    <script>
+        window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
+    </script>
+    </head>`);
+    
+    res.send(html);
 });
 
 app.get('/terms', (req, res) => {
