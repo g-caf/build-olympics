@@ -156,8 +156,9 @@ function generateTicketEmailTemplate(ticketData) {
         
         .cta-button {
             display: inline-block;
-            background: #1a1a1a;
-            color: #ffffff;
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 2px solid #e0e0e0;
             padding: 15px 30px;
             text-decoration: none;
             border-radius: 8px;
