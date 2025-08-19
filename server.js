@@ -6,7 +6,7 @@ const helmet = require('helmet');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const fs = require('fs');
-const { sendTicketRetrievalEmail, processTicketPurchase } = require('./ticket-system');
+const { sendTicketRetrievalEmail, processTicketPurchase, generateTicketCode } = require('./ticket-system');
 require('dotenv').config();
 
 const app = express();
@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 // Email configuration
 let transporter = null;
 if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    transporter = nodemailer.createTransporter({
+    transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT || 587,
         secure: process.env.EMAIL_SECURE === 'true',
@@ -46,7 +46,7 @@ const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|pdf|zip|doc|docx/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
-    
+
     if (mimetype && extname) {
         return cb(null, true);
     } else {
@@ -54,7 +54,7 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     limits: {
         fileSize: 10 * 1024 * 1024 // 10MB limit
@@ -80,7 +80,7 @@ app.use(helmet({
 app.use(cors());
 
 // Special handling for Stripe webhook - must be before express.json()
-app.use('/api/stripe/webhook', express.raw({type: 'application/json'}));
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -93,7 +93,7 @@ const db = new sqlite3.Database('./signups.db', (err) => {
         console.error('Error opening database:', err);
     } else {
         console.log('Connected to SQLite database');
-        
+
         // Create signups table if it doesn't exist
         db.run(`
             CREATE TABLE IF NOT EXISTS signups (
@@ -103,7 +103,7 @@ const db = new sqlite3.Database('./signups.db', (err) => {
                 notified BOOLEAN DEFAULT FALSE
             )
         `);
-        
+
         // Create competitors table if it doesn't exist
         db.run(`
             CREATE TABLE IF NOT EXISTS competitors (
@@ -120,7 +120,7 @@ const db = new sqlite3.Database('./signups.db', (err) => {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
-        
+
         // Create tickets table if it doesn't exist
         db.run(`
             CREATE TABLE IF NOT EXISTS tickets (
@@ -141,15 +141,15 @@ const db = new sqlite3.Database('./signups.db', (err) => {
 const authenticateCompetitorAdmin = (req, res, next) => {
     const adminKey = req.headers['competitor-admin-key'];
     const expectedKey = process.env.COMPETITOR_ADMIN_PASSCODE;
-    
+
     if (!expectedKey) {
         return res.status(500).json({ error: 'Competitor admin authentication not configured' });
     }
-    
+
     if (!adminKey || adminKey !== expectedKey) {
         return res.status(401).json({ error: 'Unauthorized - Invalid competitor admin key' });
     }
-    
+
     next();
 };
 
@@ -157,27 +157,19 @@ const authenticateCompetitorAdmin = (req, res, next) => {
 const authenticateAdmin = (req, res, next) => {
     const adminKey = req.headers['admin-key'];
     const expectedKey = process.env.ADMIN_KEY || 'build-olympics-admin-2025';
-    
+
     if (!adminKey || adminKey !== expectedKey) {
         return res.status(401).json({ error: 'Unauthorized - Invalid admin key' });
     }
-    
+
     next();
 };
 
-// Generate unique ticket code
-const generateTicketCode = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 8; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-};
+
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'wireframe-index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Competitor dashboard routes
@@ -207,18 +199,16 @@ app.get('/attend', (req, res) => {
     // Read the HTML file and inject Stripe key
     const fs = require('fs');
     let html = fs.readFileSync(path.join(__dirname, 'attend.html'), 'utf8');
-    
+
     // Inject the Stripe key into the HTML
     const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || '';
-    console.log('Stripe key injection:', stripeKey ? `Key present (${stripeKey.substring(0, 8)}...)` : 'No key found');
-    
+
     html = html.replace('</head>', `
     <script>
         window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
-        console.log('Injected Stripe key:', '${stripeKey ? stripeKey.substring(0, 8) + '...' : 'empty'}');
     </script>
     </head>`);
-    
+
     res.send(html);
 });
 
@@ -242,14 +232,14 @@ app.get('*', (req, res) => {
     // Only serve index.html for routes that don't look like API calls or static assets
     // and don't match our specific routes
     const path = req.path;
-    if (!path.startsWith('/api/') && 
-        !path.includes('.') && 
-        path !== '/attendees' && 
-        path !== '/competitors' && 
-        path !== '/dashboard' && 
-        path !== '/attend' && 
+    if (!path.startsWith('/api/') &&
+        !path.includes('.') &&
+        path !== '/attendees' &&
+        path !== '/competitors' &&
+        path !== '/dashboard' &&
+        path !== '/attend' &&
         path !== '/terms') {
-        res.sendFile(path.join(__dirname, 'wireframe-index.html'));
+        res.sendFile(path.join(__dirname, 'index.html'));
     } else {
         res.status(404).json({ error: 'Not found' });
     }
@@ -263,40 +253,40 @@ app.get('*', (req, res) => {
 app.post('/api/competitor-admin-auth', (req, res) => {
     const { passcode } = req.body;
     const expectedPasscode = process.env.COMPETITOR_ADMIN_PASSCODE;
-    
+
     if (!expectedPasscode) {
         return res.status(500).json({ error: 'Competitor admin authentication not configured' });
     }
-    
+
     if (passcode !== expectedPasscode) {
         return res.status(401).json({ error: 'Invalid passcode' });
     }
-    
-    res.json({ 
+
+    res.json({
         competitorAdminKey: expectedPasscode,
-        message: 'Competitor admin authentication successful' 
+        message: 'Competitor admin authentication successful'
     });
 });
 
 // POST /api/competitors - Create new competitor
 app.post('/api/competitors', (req, res) => {
     const { email, full_name, github_username, twitter_username, profile_photo_url, bio } = req.body;
-    
+
     if (!email || !full_name) {
         return res.status(400).json({ error: 'Email and full name are required' });
     }
-    
+
     if (!email.includes('@')) {
         return res.status(400).json({ error: 'Valid email address required' });
     }
-    
+
     const submissionFiles = JSON.stringify([]);
-    
+
     db.run(
         `INSERT INTO competitors (email, full_name, github_username, twitter_username, profile_photo_url, bio, submission_files) 
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [email, full_name, github_username || null, twitter_username || null, profile_photo_url || null, bio || null, submissionFiles],
-        function(err) {
+        function (err) {
             if (err) {
                 if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
                     return res.status(409).json({ error: 'Email already registered as competitor' });
@@ -304,11 +294,11 @@ app.post('/api/competitors', (req, res) => {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            
+
             console.log(`New competitor: ${email} (ID: ${this.lastID})`);
-            res.json({ 
-                message: 'Competitor registered successfully!', 
-                id: this.lastID 
+            res.json({
+                message: 'Competitor registered successfully!',
+                id: this.lastID
             });
         }
     );
@@ -317,30 +307,30 @@ app.post('/api/competitors', (req, res) => {
 // GET /api/competitors - List all competitors (admin auth required)
 app.get('/api/competitors', authenticateCompetitorAdmin, (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
-    
+
     let query = 'SELECT * FROM competitors';
     let params = [];
-    
+
     if (status) {
         query += ' WHERE status = ?';
         params.push(status);
     }
-    
+
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(parseInt(limit), parseInt(offset));
-    
+
     db.all(query, params, (err, rows) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        
+
         // Parse submission_files JSON for each competitor
         const competitors = rows.map(competitor => ({
             ...competitor,
             submission_files: JSON.parse(competitor.submission_files || '[]')
         }));
-        
+
         res.json(competitors);
     });
 });
@@ -348,23 +338,23 @@ app.get('/api/competitors', authenticateCompetitorAdmin, (req, res) => {
 // GET /api/competitors/:id - Get single competitor profile
 app.get('/api/competitors/:id', (req, res) => {
     const { id } = req.params;
-    
+
     db.get('SELECT * FROM competitors WHERE id = ?', [id], (err, row) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        
+
         if (!row) {
             return res.status(404).json({ error: 'Competitor not found' });
         }
-        
+
         // Parse submission_files JSON
         const competitor = {
             ...row,
             submission_files: JSON.parse(row.submission_files || '[]')
         };
-        
+
         res.json(competitor);
     });
 });
@@ -373,27 +363,27 @@ app.get('/api/competitors/:id', (req, res) => {
 app.put('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
     const { id } = req.params;
     const { email, full_name, github_username, twitter_username, profile_photo_url, bio, status } = req.body;
-    
+
     if (!email || !full_name) {
         return res.status(400).json({ error: 'Email and full name are required' });
     }
-    
+
     if (!email.includes('@')) {
         return res.status(400).json({ error: 'Valid email address required' });
     }
-    
+
     if (status && !['pending', 'qualified', 'finalist', 'eliminated'].includes(status)) {
         return res.status(400).json({ error: 'Invalid status value' });
     }
-    
+
     db.run(
         `UPDATE competitors 
          SET email = ?, full_name = ?, github_username = ?, twitter_username = ?, 
              profile_photo_url = ?, bio = ?, status = COALESCE(?, status), updated_at = CURRENT_TIMESTAMP
          WHERE id = ?`,
-        [email, full_name, github_username || null, twitter_username || null, 
-         profile_photo_url || null, bio || null, status || null, id],
-        function(err) {
+        [email, full_name, github_username || null, twitter_username || null,
+            profile_photo_url || null, bio || null, status || null, id],
+        function (err) {
             if (err) {
                 if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
                     return res.status(409).json({ error: 'Email already in use by another competitor' });
@@ -401,11 +391,11 @@ app.put('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            
+
             if (this.changes === 0) {
                 return res.status(404).json({ error: 'Competitor not found' });
             }
-            
+
             console.log(`Updated competitor ID: ${id}`);
             res.json({ message: 'Competitor updated successfully' });
         }
@@ -415,18 +405,18 @@ app.put('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
 // DELETE /api/competitors/:id - Remove competitor
 app.delete('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
     const { id } = req.params;
-    
+
     // First get the competitor to delete their files
     db.get('SELECT submission_files FROM competitors WHERE id = ?', [id], (err, row) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        
+
         if (!row) {
             return res.status(404).json({ error: 'Competitor not found' });
         }
-        
+
         // Delete files if they exist
         try {
             const files = JSON.parse(row.submission_files || '[]');
@@ -439,14 +429,14 @@ app.delete('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
         } catch (error) {
             console.error('Error deleting files:', error);
         }
-        
+
         // Delete competitor from database
-        db.run('DELETE FROM competitors WHERE id = ?', [id], function(err) {
+        db.run('DELETE FROM competitors WHERE id = ?', [id], function (err) {
             if (err) {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            
+
             console.log(`Deleted competitor ID: ${id}`);
             res.json({ message: 'Competitor deleted successfully' });
         });
@@ -456,39 +446,39 @@ app.delete('/api/competitors/:id', authenticateCompetitorAdmin, (req, res) => {
 // POST /api/competitors/:id/upload - Handle file uploads
 app.post('/api/competitors/:id/upload', upload.array('files', 5), (req, res) => {
     const { id } = req.params;
-    
+
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ error: 'No files uploaded' });
     }
-    
+
     // Get current competitor to update their submission files
     db.get('SELECT submission_files FROM competitors WHERE id = ?', [id], (err, row) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        
+
         if (!row) {
             return res.status(404).json({ error: 'Competitor not found' });
         }
-        
+
         try {
             const currentFiles = JSON.parse(row.submission_files || '[]');
             const newFilePaths = req.files.map(file => `uploads/competitors/${file.filename}`);
             const updatedFiles = [...currentFiles, ...newFilePaths];
-            
+
             // Update database with new file paths
             db.run(
                 'UPDATE competitors SET submission_files = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
                 [JSON.stringify(updatedFiles), id],
-                function(err) {
+                function (err) {
                     if (err) {
                         console.error('Database error:', err);
                         return res.status(500).json({ error: 'Internal server error' });
                     }
-                    
+
                     console.log(`Files uploaded for competitor ID: ${id}`);
-                    res.json({ 
+                    res.json({
                         message: 'Files uploaded successfully',
                         files: newFilePaths
                     });
@@ -508,11 +498,11 @@ app.post('/api/competitors/:id/upload', upload.array('files', 5), (req, res) => 
 // POST /api/tickets/purchase - Initiate Stripe payment intent
 app.post('/api/tickets/purchase', async (req, res) => {
     const { email } = req.body;
-    
+
     if (!email || !email.includes('@')) {
         return res.status(400).json({ error: 'Valid email address required' });
     }
-    
+
     try {
         // Initialize Stripe
         const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -524,7 +514,7 @@ app.post('/api/tickets/purchase', async (req, res) => {
                 event: 'Build Olympics 2025'
             }
         });
-        
+
         res.json({
             success: true,
             message: 'Payment intent created successfully',
@@ -537,118 +527,16 @@ app.post('/api/tickets/purchase', async (req, res) => {
     }
 });
 
-// POST /api/tickets/confirm - Confirm payment and create ticket record
-app.post('/api/tickets/confirm', async (req, res) => {
-    const { email, paymentIntentId } = req.body;
-    
-    if (!email || !paymentIntentId) {
-        return res.status(400).json({ error: 'Email and payment intent ID required' });
-    }
-    
-    if (!email.includes('@')) {
-        return res.status(400).json({ error: 'Valid email address required' });
-    }
-    
-    try {
-        // Note: Stripe payment verification would be here
-        // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-        // const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-        // 
-        // if (paymentIntent.status !== 'succeeded') {
-        //     return res.status(400).json({ error: 'Payment not completed' });
-        // }
-        
-        // Generate unique ticket code
-        let ticketCode;
-        let isUnique = false;
-        
-        while (!isUnique) {
-            ticketCode = generateTicketCode();
-            
-            // Check if code already exists
-            const existingTicket = await new Promise((resolve, reject) => {
-                db.get('SELECT id FROM tickets WHERE ticket_code = ?', [ticketCode], (err, row) => {
-                    if (err) reject(err);
-                    else resolve(row);
-                });
-            });
-            
-            if (!existingTicket) {
-                isUnique = true;
-            }
-        }
-        
-        // Create ticket record
-        db.run(
-            `INSERT INTO tickets (email, ticket_type, price, stripe_payment_intent_id, status, ticket_code) 
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [email, 'general_admission', 2000, paymentIntentId, 'confirmed', ticketCode],
-            function(err) {
-                if (err) {
-                    console.error('Database error:', err);
-                    return res.status(500).json({ error: 'Failed to create ticket record' });
-                }
-                
-                console.log(`New ticket created: ${email} (ID: ${this.lastID}, Code: ${ticketCode})`);
-                
-                // Send confirmation email if configured
-                if (transporter && process.env.EMAIL_USER) {
-                    const mailOptions = {
-                        from: process.env.EMAIL_USER,
-                        to: email,
-                        subject: 'Build Olympics 2025 - Ticket Confirmation',
-                        html: `
-                            <h2>Build Olympics 2025 - Ticket Confirmed!</h2>
-                            <p>Thank you for your purchase!</p>
-                            <p><strong>Event:</strong> Build Olympics 2025</p>
-                            <p><strong>Date:</strong> October 29th, 2025</p>
-                            <p><strong>Venue:</strong> The Midway SF</p>
-                            <p><strong>Ticket Type:</strong> General Admission</p>
-                            <p><strong>Ticket Code:</strong> ${ticketCode}</p>
-                            <p><strong>Email:</strong> ${email}</p>
-                            <hr>
-                            <p>Please save this email and bring your ticket code to the event.</p>
-                            <p>We're excited to see you there!</p>
-                        `
-                    };
-                    
-                    transporter.sendMail(mailOptions, (error, info) => {
-                        if (error) {
-                            console.error('Ticket confirmation email failed:', error);
-                        } else {
-                            console.log('Ticket confirmation email sent:', info.response);
-                        }
-                    });
-                }
-                
-                res.json({ 
-                    success: true,
-                    message: 'Ticket confirmed successfully!', 
-                    ticket: {
-                        id: this.lastID,
-                        email: email,
-                        ticket_code: ticketCode,
-                        ticket_type: 'general_admission',
-                        price: 2000,
-                        status: 'confirmed'
-                    }
-                });
-            }
-        );
-    } catch (error) {
-        console.error('Ticket confirmation error:', error);
-        res.status(500).json({ error: 'Failed to confirm ticket' });
-    }
-});
+
 
 // GET /api/tickets/:email - Get tickets for email address
 app.get('/api/tickets/:email', (req, res) => {
     const { email } = req.params;
-    
+
     if (!email || !email.includes('@')) {
         return res.status(400).json({ error: 'Valid email address required' });
     }
-    
+
     db.all(
         'SELECT id, email, ticket_type, price, status, ticket_code, created_at FROM tickets WHERE email = ? ORDER BY created_at DESC',
         [email],
@@ -657,58 +545,35 @@ app.get('/api/tickets/:email', (req, res) => {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            
+
             res.json({ tickets: rows });
         }
     );
 });
 
-// GET /api/tickets - List all tickets (admin only)
-app.get('/api/tickets', authenticateAdmin, (req, res) => {
-    const { status, limit = 50, offset = 0 } = req.query;
-    
-    let query = 'SELECT * FROM tickets';
-    let params = [];
-    
-    if (status) {
-        query += ' WHERE status = ?';
-        params.push(status);
-    }
-    
-    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
-    params.push(parseInt(limit), parseInt(offset));
-    
-    db.all(query, params, (err, rows) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Internal server error' });
-        }
-        
-        res.json({ tickets: rows });
-    });
-});
+
 
 // POST /api/stripe/webhook - Stripe webhook endpoint
 app.post('/api/stripe/webhook', (req, res) => {
     const sig = req.headers['stripe-signature'];
-    
+
     if (!sig) {
         console.error('Missing stripe-signature header');
         return res.status(400).send('Missing stripe-signature header');
     }
-    
+
     // Stripe webhook verification
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET ? process.env.STRIPE_WEBHOOK_SECRET.trim() : null;
-    
+
     if (!endpointSecret) {
         console.error('Missing STRIPE_WEBHOOK_SECRET');
         return res.status(500).send('Webhook secret not configured');
     }
-    
+
     try {
         const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-        
+
         // Handle the event
         switch (event.type) {
             case 'payment_intent.succeeded':
@@ -722,8 +587,8 @@ app.post('/api/stripe/webhook', (req, res) => {
             default:
                 console.log(`Unhandled event type: ${event.type}`);
         }
-        
-        res.json({received: true});
+
+        res.json({ received: true });
     } catch (err) {
         console.error('Webhook signature verification failed:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -737,12 +602,12 @@ app.post('/api/stripe/webhook', (req, res) => {
 // API endpoint to handle email signups
 app.post('/api/signup', (req, res) => {
     const { email } = req.body;
-    
+
     if (!email || !email.includes('@')) {
         return res.status(400).json({ error: 'Valid email address required' });
     }
-    
-    db.run('INSERT INTO signups (email) VALUES (?)', [email], function(err) {
+
+    db.run('INSERT INTO signups (email) VALUES (?)', [email], function (err) {
         if (err) {
             if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
                 return res.status(409).json({ error: 'Email already registered' });
@@ -750,9 +615,9 @@ app.post('/api/signup', (req, res) => {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        
+
         console.log(`New signup: ${email} (ID: ${this.lastID})`);
-        
+
         // Send email notification if configured
         if (transporter && process.env.NOTIFY_EMAIL) {
             const mailOptions = {
@@ -766,7 +631,7 @@ app.post('/api/signup', (req, res) => {
                     <p><strong>Signup ID:</strong> ${this.lastID}</p>
                 `
             };
-            
+
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error('Email notification failed:', error);
@@ -777,22 +642,16 @@ app.post('/api/signup', (req, res) => {
                 }
             });
         }
-        
-        res.json({ 
-            message: 'Successfully signed up!', 
-            id: this.lastID 
+
+        res.json({
+            message: 'Successfully signed up!',
+            id: this.lastID
         });
     });
 });
 
 // API endpoint to get all signups (for admin)
-app.get('/api/signups', (req, res) => {
-    const adminKey = req.headers['admin-key'];
-    const expectedKey = process.env.ADMIN_KEY || 'build-olympics-admin-2025';
-    if (!adminKey || adminKey !== expectedKey) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    
+app.get('/api/signups', authenticateAdmin, (req, res) => {
     db.all('SELECT * FROM signups ORDER BY created_at DESC', (err, rows) => {
         if (err) {
             console.error('Database error:', err);
@@ -817,18 +676,18 @@ app.get('/api/count', (req, res) => {
 app.post('/api/admin-auth', (req, res) => {
     const { passcode } = req.body;
     const expectedPasscode = process.env.COMPETITOR_ADMIN_PASSCODE;
-    
+
     if (!expectedPasscode) {
         return res.status(500).json({ error: 'Attendee dashboard authentication not configured' });
     }
-    
+
     if (passcode !== expectedPasscode) {
         return res.status(401).json({ error: 'Invalid passcode' });
     }
-    
-    res.json({ 
+
+    res.json({
         adminKey: process.env.ADMIN_KEY || 'build-olympics-admin-2025',
-        message: 'Attendee dashboard authentication successful' 
+        message: 'Attendee dashboard authentication successful'
     });
 });
 
@@ -839,15 +698,15 @@ app.post('/api/admin-auth', (req, res) => {
 // POST /api/tickets/confirm - Process ticket purchase after payment
 app.post('/api/tickets/confirm', async (req, res) => {
     const { email, paymentIntentId, ticketType, price } = req.body;
-    
+
     if (!email || !paymentIntentId) {
         return res.status(400).json({ error: 'Email and payment intent ID are required' });
     }
-    
+
     if (!transporter) {
         return res.status(500).json({ error: 'Email service not configured' });
     }
-    
+
     try {
         const result = await processTicketPurchase(db, transporter, {
             email,
@@ -855,17 +714,17 @@ app.post('/api/tickets/confirm', async (req, res) => {
             ticketType,
             price
         });
-        
+
         res.json({
             success: true,
             ticketCode: result.ticketCode,
             emailSent: result.emailSent,
             message: 'Ticket purchased successfully!'
         });
-        
+
     } catch (error) {
         console.error('Ticket purchase error:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Failed to process ticket purchase',
             details: error.message
         });
@@ -875,15 +734,15 @@ app.post('/api/tickets/confirm', async (req, res) => {
 // POST /api/tickets/retrieve - Retrieve and resend tickets to email
 app.post('/api/tickets/retrieve', async (req, res) => {
     const { email } = req.body;
-    
+
     if (!email || !email.includes('@')) {
         return res.status(400).json({ error: 'Valid email address required' });
     }
-    
+
     if (!transporter) {
         return res.status(500).json({ error: 'Email service not configured' });
     }
-    
+
     // Find tickets for this email
     db.all(
         'SELECT * FROM tickets WHERE email = ? AND status = "confirmed" ORDER BY created_at DESC',
@@ -893,15 +752,15 @@ app.post('/api/tickets/retrieve', async (req, res) => {
                 console.error('Database error:', err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            
+
             if (!rows || rows.length === 0) {
                 return res.status(404).json({ error: 'No confirmed tickets found for this email address' });
             }
-            
+
             try {
                 // Send retrieval email with all tickets
                 const emailResult = await sendTicketRetrievalEmail(transporter, email, rows);
-                
+
                 if (emailResult.success) {
                     res.json({
                         success: true,
@@ -914,10 +773,10 @@ app.post('/api/tickets/retrieve', async (req, res) => {
                         details: emailResult.error
                     });
                 }
-                
+
             } catch (error) {
                 console.error('Ticket retrieval error:', error);
-                res.status(500).json({ 
+                res.status(500).json({
                     error: 'Failed to retrieve tickets',
                     details: error.message
                 });
@@ -927,33 +786,26 @@ app.post('/api/tickets/retrieve', async (req, res) => {
 });
 
 // GET /api/tickets - List all tickets (admin auth required)
-app.get('/api/tickets', (req, res) => {
-    const adminKey = req.headers['admin-key'];
-    const expectedKey = process.env.ADMIN_KEY || 'build-olympics-admin-2025';
-    
-    if (!adminKey || adminKey !== expectedKey) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    
+app.get('/api/tickets', authenticateAdmin, (req, res) => {
     const { status, limit = 50, offset = 0 } = req.query;
-    
+
     let query = 'SELECT * FROM tickets';
     let params = [];
-    
+
     if (status) {
         query += ' WHERE status = ?';
         params.push(status);
     }
-    
+
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(parseInt(limit), parseInt(offset));
-    
+
     db.all(query, params, (err, rows) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        
+
         res.json(rows);
     });
 });
