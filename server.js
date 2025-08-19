@@ -155,6 +155,11 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// Legacy admin route - redirect to attendees
+app.get('/admin', (req, res) => {
+    res.redirect('/attendees');
+});
+
 app.get('/attend', (req, res) => {
     res.sendFile(path.join(__dirname, 'attend.html'));
 });
