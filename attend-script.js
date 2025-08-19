@@ -221,43 +221,73 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-// Mock function - replace with actual API call
+// Create payment intent via API
 async function createPaymentIntent(formData) {
-    // This would be replaced with an actual API call to your server
-    // Your server would create a PaymentIntent using Stripe's server-side SDK
+    try {
+        const response = await fetch('/api/tickets/purchase', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: formData.email,
+                quantity: formData.quantity
+            })
+        });
 
-    // Simulated API response
-    await new Promise(resolve => setTimeout(resolve, 1000));
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    return {
-        id: 'pi_' + Math.random().toString(36).substr(2, 24),
-        client_secret: 'pi_test_client_secret',
-        amount: formData.total * 100, // Convert to cents
-        currency: 'usd'
-    };
+        const result = await response.json();
+        return {
+            id: result.payment_intent_id,
+            client_secret: result.client_secret,
+            amount: formData.total * 100,
+            currency: 'usd'
+        };
+    } catch (error) {
+        console.error('Error creating payment intent:', error);
+        throw error;
+    }
 }
 
-// Mock function - replace with actual API call to save ticket purchase
+// Save ticket purchase via API
 async function saveTicketPurchase(formData, paymentIntent) {
-    // This would save the ticket purchase to your database
-    // and send confirmation email
+    try {
+        const response = await fetch('/api/tickets/confirm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: formData.email,
+                paymentIntentId: paymentIntent.id,
+                ticketType: 'General Admission',
+                price: formData.total
+            })
+        });
 
-    const ticketData = {
-        ...formData,
-        paymentId: paymentIntent.id,
-        orderId: 'AMP-' + Date.now(),
-        purchaseDate: new Date().toISOString(),
-        eventDate: '2025-10-29',
-        eventTime: '7:00 PM - 11:00 PM PST',
-        venue: 'The Midway SF',
-        address: '900 Marin St, San Francisco, CA 94124'
-    };
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    console.log('Ticket purchase saved:', ticketData);
-    return ticketData;
+        const result = await response.json();
+        return {
+            ...formData,
+            paymentId: paymentIntent.id,
+            orderId: result.ticketCode,
+            purchaseDate: new Date().toISOString(),
+            eventDate: '2025-10-29',
+            eventTime: '7:00 PM - 11:00 PM PST',
+            venue: 'The Midway SF',
+            address: '900 Marin St, San Francisco, CA 94124',
+            ticketCode: result.ticketCode
+        };
+    } catch (error) {
+        console.error('Error saving ticket purchase:', error);
+        throw error;
+    }
 }
 
 function showDemoSuccess(formData) {

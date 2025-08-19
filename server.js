@@ -820,8 +820,8 @@ app.post('/api/admin-auth', (req, res) => {
 // TICKET EMAIL ENDPOINTS
 // =================================
 
-// POST /api/tickets/purchase - Process ticket purchase after payment
-app.post('/api/tickets/purchase', async (req, res) => {
+// POST /api/tickets/confirm - Process ticket purchase after payment
+app.post('/api/tickets/confirm', async (req, res) => {
     const { email, paymentIntentId, ticketType, price } = req.body;
     
     if (!email || !paymentIntentId) {
