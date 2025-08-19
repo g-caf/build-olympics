@@ -91,25 +91,25 @@ function generateCalendarLinks(ticketData) {
  */
 function generateCalendarInviteHTML(calendarLinks) {
     return `
-    <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #333;">
-        <h3 style="color: #00ff88; margin-bottom: 15px; font-size: 18px;">📅 Add to Calendar</h3>
-        <p style="margin-bottom: 15px; color: #cccccc;">Don't miss the event! Add it to your calendar:</p>
+    <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin: 25px 0; border: 2px solid #e0e0e0;">
+        <h3 style="color: #1a1a1a; margin-bottom: 15px; font-size: 18px; font-weight: 600;">Add to Calendar</h3>
+        <p style="margin-bottom: 15px; color: #1a1a1a;">Don't miss the event! Add it to your calendar:</p>
         
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <a href="${calendarLinks.google}" 
-               style="background: #4285f4; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-size: 14px; display: inline-block;"
+               style="background: #1a1a1a; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; transition: all 0.2s ease;"
                target="_blank">+ Google Calendar</a>
             
             <a href="${calendarLinks.outlook}" 
-               style="background: #0078d4; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-size: 14px; display: inline-block;"
+               style="background: #1a1a1a; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; transition: all 0.2s ease;"
                target="_blank">+ Outlook</a>
             
             <a href="${calendarLinks.yahoo}" 
-               style="background: #6001d2; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-size: 14px; display: inline-block;"
+               style="background: #1a1a1a; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; transition: all 0.2s ease;"
                target="_blank">+ Yahoo Calendar</a>
         </div>
         
-        <p style="margin-top: 10px; font-size: 12px; color: #888;">
+        <p style="margin-top: 15px; font-size: 12px; color: #666666;">
             Or use the attached .ics file to import into any calendar app
         </p>
     </div>`;

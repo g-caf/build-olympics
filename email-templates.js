@@ -12,8 +12,7 @@ function generateTicketEmailTemplate(ticketData) {
         ticketType = 'General Admission',
         price = 20,
         eventDate = 'October 29th, 2025',
-        venue = 'The Midway SF',
-        qrCodeBase64
+        venue = 'The Midway SF'
     } = ticketData;
 
     // Generate calendar links
@@ -144,38 +143,7 @@ function generateTicketEmailTemplate(ticketData) {
             border: 1px solid #e0e0e0;
         }
         
-        .qr-section {
-            text-align: center;
-            margin: 30px 0;
-            padding: 25px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            margin: 15px auto;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .important-info {
-            background: #f9f9f9;
-            border-left: 4px solid #1a1a1a;
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .important-info h3 {
-            color: #1a1a1a;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
+
         
         .cta-button {
             display: inline-block;
@@ -213,11 +181,6 @@ function generateTicketEmailTemplate(ticketData) {
                 align-items: flex-start;
                 gap: 5px;
             }
-            
-            .qr-code {
-                width: 150px;
-                height: 150px;
-            }
         }
     </style>
 </head>
@@ -231,7 +194,7 @@ function generateTicketEmailTemplate(ticketData) {
         
         <div class="content">
             <div class="greeting">
-                <p>Hello! 👋</p>
+                <p>Hello!</p>
                 <p>Welcome to Amp Arena! Your ticket has been confirmed and is ready for the event.</p>
             </div>
             
@@ -266,27 +229,11 @@ function generateTicketEmailTemplate(ticketData) {
                 </div>
             </div>
             
-            ${qrCodeBase64 ? `
-            <div class="qr-section">
-                <h3>Your QR Code</h3>
-                <p>Present this QR code at the venue for quick entry:</p>
-                <img src="data:image/png;base64,${qrCodeBase64}" alt="Ticket QR Code" class="qr-code">
-                <p><small>Save this email or take a screenshot for backup</small></p>
-            </div>
-            ` : ''}
+
             
             ${calendarHTML}
             
-            <div class="important-info">
-                <h3>⚠️ Important Information</h3>
-                <ul>
-                    <li>Arrive early - doors open 30 minutes before start time</li>
-                    <li>Bring a valid ID that matches your ticket registration</li>
-                    <li>This ticket is non-transferable and non-refundable</li>
-                    <li>Keep this email or screenshot the QR code for entry</li>
-                    <li>Event details and time will be updated via email</li>
-                </ul>
-            </div>
+
             
             <div style="text-align: center;">
                 <p>Need to access your ticket again?</p>
