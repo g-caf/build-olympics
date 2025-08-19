@@ -539,9 +539,9 @@ app.post('/api/tickets/purchase', async (req, res) => {
 
 // POST /api/tickets/confirm - Confirm payment and create ticket record
 app.post('/api/tickets/confirm', async (req, res) => {
-    const { email, stripe_payment_intent_id } = req.body;
+    const { email, paymentIntentId } = req.body;
     
-    if (!email || !stripe_payment_intent_id) {
+    if (!email || !paymentIntentId) {
         return res.status(400).json({ error: 'Email and payment intent ID required' });
     }
     
@@ -552,7 +552,7 @@ app.post('/api/tickets/confirm', async (req, res) => {
     try {
         // Note: Stripe payment verification would be here
         // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-        // const paymentIntent = await stripe.paymentIntents.retrieve(stripe_payment_intent_id);
+        // const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
         // 
         // if (paymentIntent.status !== 'succeeded') {
         //     return res.status(400).json({ error: 'Payment not completed' });
@@ -582,7 +582,7 @@ app.post('/api/tickets/confirm', async (req, res) => {
         db.run(
             `INSERT INTO tickets (email, ticket_type, price, stripe_payment_intent_id, status, ticket_code) 
              VALUES (?, ?, ?, ?, ?, ?)`,
-            [email, 'general_admission', 2000, stripe_payment_intent_id, 'confirmed', ticketCode],
+            [email, 'general_admission', 2000, paymentIntentId, 'confirmed', ticketCode],
             function(err) {
                 if (err) {
                     console.error('Database error:', err);
