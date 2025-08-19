@@ -1,23 +1,35 @@
 // Stripe configuration
-// Replace with your actual publishable key when ready to activate payments
-const STRIPE_PUBLIC_KEY = 'pk_test_placeholder'; // Add your Stripe publishable key here
 const TICKET_PRICE = 20; // $20 per ticket
 
 let stripe = null;
 let cardElement = null;
 let currentQuantity = 1;
 let isProcessing = false;
+let STRIPE_PUBLIC_KEY = null;
 
-// Initialize Stripe (will show placeholder message if no key provided)
-document.addEventListener('DOMContentLoaded', function () {
+// Initialize Stripe after fetching the publishable key
+document.addEventListener('DOMContentLoaded', async function () {
+    await fetchStripeConfig();
     initializeStripe();
     setupQuantityControls();
     setupFormSubmission();
     updateTotals();
 });
 
+// Fetch Stripe configuration from server
+async function fetchStripeConfig() {
+    try {
+        const response = await fetch('/api/stripe/config');
+        const config = await response.json();
+        STRIPE_PUBLIC_KEY = config.publishableKey;
+    } catch (error) {
+        console.error('Failed to fetch Stripe configuration:', error);
+        STRIPE_PUBLIC_KEY = null;
+    }
+}
+
 function initializeStripe() {
-    if (STRIPE_PUBLIC_KEY === 'pk_test_placeholder') {
+    if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === 'pk_test_placeholder') {
         // Show placeholder when no Stripe key is configured
         const cardElement = document.getElementById('card-element');
         cardElement.innerHTML = `

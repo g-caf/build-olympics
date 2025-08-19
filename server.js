@@ -209,6 +209,13 @@ app.get('/tickets/retrieve', (req, res) => {
     res.sendFile(path.join(__dirname, 'ticket-retrieval-page.html'));
 });
 
+// API endpoint to get Stripe publishable key
+app.get('/api/stripe/config', (req, res) => {
+    res.json({
+        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+    });
+});
+
 // Handle SPA routing fallback - send index for any unmatched routes
 app.get('*', (req, res) => {
     // Only serve index.html for routes that don't look like API calls or static assets
