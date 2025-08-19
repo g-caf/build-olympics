@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { generateCalendarLinks, generateCalendarInviteHTML } = require('./calendar-generator');
 
 /**
  * Generate ticket email template with Amp branding
@@ -14,6 +15,10 @@ function generateTicketEmailTemplate(ticketData) {
         venue = 'The Midway SF',
         qrCodeBase64
     } = ticketData;
+
+    // Generate calendar links
+    const calendarLinks = generateCalendarLinks(ticketData);
+    const calendarHTML = generateCalendarInviteHTML(calendarLinks);
 
     const ampLogoPath = path.join(__dirname, 'Amp_mark_white.webp');
     let ampLogoBase64 = '';
@@ -256,6 +261,8 @@ function generateTicketEmailTemplate(ticketData) {
                 <p><small>Save this email or take a screenshot for backup</small></p>
             </div>
             ` : ''}
+            
+            ${calendarHTML}
             
             <div class="important-info">
                 <h3>⚠️ Important Information</h3>

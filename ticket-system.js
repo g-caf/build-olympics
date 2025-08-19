@@ -1,6 +1,7 @@
 const QRCode = require('qrcode');
 const { generateTicketEmailTemplate, generateTicketRetrievalTemplate } = require('./email-templates');
 const { generateTicketPDF } = require('./pdf-generator');
+const { generateICSFile } = require('./calendar-generator');
 
 /**
  * Generate unique ticket code
@@ -52,6 +53,9 @@ async function sendTicketEmail(transporter, ticketData) {
         // Generate PDF ticket
         const pdfBuffer = await generateTicketPDF(ticketData);
         
+        // Generate calendar invite
+        const icsContent = generateICSFile(ticketData);
+        
         // Email options
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -63,6 +67,11 @@ async function sendTicketEmail(transporter, ticketData) {
                     filename: `amp-arena-ticket-${ticketCode}.pdf`,
                     content: pdfBuffer,
                     contentType: 'application/pdf'
+                },
+                {
+                    filename: 'amp-arena-event.ics',
+                    content: icsContent,
+                    contentType: 'text/calendar'
                 }
             ]
         };
@@ -116,6 +125,16 @@ async function sendTicketRetrievalEmail(transporter, email, tickets) {
             } catch (pdfError) {
                 console.error(`Error generating PDF for ticket ${ticket.ticket_code}:`, pdfError);
             }
+        }
+        
+        // Add calendar invite (one per retrieval email)
+        if (tickets.length > 0) {
+            const icsContent = generateICSFile({ ticketCode: tickets[0].ticket_code });
+            attachments.push({
+                filename: 'amp-arena-event.ics',
+                content: icsContent,
+                contentType: 'text/calendar'
+            });
         }
         
         const mailOptions = {
