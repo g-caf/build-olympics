@@ -146,8 +146,8 @@ app.get('/competitors/profile/:id', (req, res) => {
     res.sendFile(path.join(__dirname, 'competitor-profile.html'));
 });
 
-// Admin dashboard routes
-app.get('/admin', (req, res) => {
+// Attendee dashboard routes
+app.get('/attendees', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
@@ -166,7 +166,15 @@ app.get('/terms', (req, res) => {
 // Handle SPA routing fallback - send index for any unmatched routes
 app.get('*', (req, res) => {
     // Only serve index.html for routes that don't look like API calls or static assets
-    if (!req.path.startsWith('/api/') && !req.path.includes('.')) {
+    // and don't match our specific routes
+    const path = req.path;
+    if (!path.startsWith('/api/') && 
+        !path.includes('.') && 
+        path !== '/attendees' && 
+        path !== '/competitors' && 
+        path !== '/dashboard' && 
+        path !== '/attend' && 
+        path !== '/terms') {
         res.sendFile(path.join(__dirname, 'wireframe-index.html'));
     } else {
         res.status(404).json({ error: 'Not found' });
@@ -498,17 +506,22 @@ app.get('/api/count', (req, res) => {
     });
 });
 
-// Admin authentication endpoint
+// Attendee dashboard authentication endpoint
 app.post('/api/admin-auth', (req, res) => {
     const { passcode } = req.body;
+    const expectedPasscode = process.env.COMPETITOR_ADMIN_PASSCODE;
     
-    if (passcode !== '102925') {
+    if (!expectedPasscode) {
+        return res.status(500).json({ error: 'Attendee dashboard authentication not configured' });
+    }
+    
+    if (passcode !== expectedPasscode) {
         return res.status(401).json({ error: 'Invalid passcode' });
     }
     
     res.json({ 
         adminKey: process.env.ADMIN_KEY || 'build-olympics-admin-2025',
-        message: 'Authentication successful' 
+        message: 'Attendee dashboard authentication successful' 
     });
 });
 
