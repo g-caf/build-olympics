@@ -19,13 +19,22 @@ function generateTicketEmailTemplate(ticketData) {
     const calendarLinks = generateCalendarLinks(ticketData);
     const calendarHTML = generateCalendarInviteHTML(calendarLinks);
 
-    const ampLogoPath = path.join(__dirname, 'Amp_mark_outline.webp');
+    // Try PNG first (better email client compatibility), fallback to WebP
+    const pngLogoPath = path.join(__dirname, 'Style=outline.png');
+    const webpLogoPath = path.join(__dirname, 'Amp_mark_outline.webp');
     let ampLogoBase64 = '';
 
     try {
-        if (fs.existsSync(ampLogoPath)) {
-            const logoBuffer = fs.readFileSync(ampLogoPath);
+        if (fs.existsSync(pngLogoPath)) {
+            const logoBuffer = fs.readFileSync(pngLogoPath);
+            ampLogoBase64 = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+            console.log('Using PNG logo for better email client compatibility');
+        } else if (fs.existsSync(webpLogoPath)) {
+            const logoBuffer = fs.readFileSync(webpLogoPath);
             ampLogoBase64 = `data:image/webp;base64,${logoBuffer.toString('base64')}`;
+            console.log('Using WebP logo as fallback');
+        } else {
+            console.error('No logo files found for email template');
         }
     } catch (error) {
         console.error('Error loading Amp logo:', error);
@@ -264,13 +273,22 @@ function generateTicketRetrievalTemplate(ticketData) {
         requestTime = new Date().toLocaleString()
     } = ticketData;
 
-    const ampLogoPath = path.join(__dirname, 'Amp_mark_outline.webp');
+    // Try PNG first (better email client compatibility), fallback to WebP
+    const pngLogoPath = path.join(__dirname, 'Style=outline.png');
+    const webpLogoPath = path.join(__dirname, 'Amp_mark_outline.webp');
     let ampLogoBase64 = '';
 
     try {
-        if (fs.existsSync(ampLogoPath)) {
-            const logoBuffer = fs.readFileSync(ampLogoPath);
+        if (fs.existsSync(pngLogoPath)) {
+            const logoBuffer = fs.readFileSync(pngLogoPath);
+            ampLogoBase64 = `data:image/png;base64,${logoBuffer.toString('base64')}`;
+            console.log('Using PNG logo for better email client compatibility (retrieval)');
+        } else if (fs.existsSync(webpLogoPath)) {
+            const logoBuffer = fs.readFileSync(webpLogoPath);
             ampLogoBase64 = `data:image/webp;base64,${logoBuffer.toString('base64')}`;
+            console.log('Using WebP logo as fallback (retrieval)');
+        } else {
+            console.error('No logo files found for email template (retrieval)');
         }
     } catch (error) {
         console.error('Error loading Amp logo:', error);

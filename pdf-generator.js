@@ -21,10 +21,10 @@ async function generateTicketPDF(ticketData) {
             const doc = new PDFDocument({
                 size: 'A4',
                 margins: {
-                    top: 50,
-                    bottom: 50,
-                    left: 50,
-                    right: 50
+                    top: 40,
+                    bottom: 40,
+                    left: 40,
+                    right: 40
                 }
             });
 
@@ -33,18 +33,22 @@ async function generateTicketPDF(ticketData) {
             doc.on('end', () => resolve(Buffer.concat(chunks)));
             doc.on('error', reject);
 
-            // Colors
-            const ampGreen = '#00ff88';
-            const darkBg = '#1a1a1a';
+            // Colors - Clean white design
+            const darkText = '#1a1a1a';
+            const lightGray = '#f5f5f5';
             const white = '#ffffff';
+            const borderGray = '#e0e0e0';
 
-            // Background
+            // Clean white background
             doc.rect(0, 0, doc.page.width, doc.page.height)
-               .fill(darkBg);
+               .fill(white);
 
-            // Header with Amp branding
-            doc.rect(0, 0, doc.page.width, 120)
-               .fill(ampGreen);
+            // Header with clean styling
+            doc.rect(0, 0, doc.page.width, 80)
+               .fill(lightGray)
+               .strokeColor(borderGray)
+               .lineWidth(1)
+               .stroke();
 
             // Try to add Amp logo
             const logoPath = path.join(__dirname, 'Amp_mark_white.webp');
@@ -58,42 +62,41 @@ async function generateTicketPDF(ticketData) {
                 console.error('Logo loading error:', error);
             }
 
-            // Title
-            doc.fontSize(32)
-               .fillColor('#000000')
-               .text('AMP ARENA', 70, 35, {
-                   width: doc.page.width - 140,
+            // Title - compact header
+            doc.fontSize(28)
+               .fillColor(darkText)
+               .text('AMP ARENA', 50, 25, {
+                   width: doc.page.width - 100,
                    align: 'center'
                });
 
-            doc.fontSize(16)
-               .text('ADMISSION TICKET', 70, 75, {
-                   width: doc.page.width - 140,
+            doc.fontSize(14)
+               .fillColor('#666666')
+               .text('ADMISSION TICKET', 50, 55, {
+                   width: doc.page.width - 100,
                    align: 'center'
                });
 
-            // Main ticket content
-            doc.fillColor(white);
+            // Ticket details box - compact layout
+            const detailsY = 110;
+            const boxHeight = 350;
             
-            // Event title
-            doc.fontSize(24)
-               .text('Amp Arena', 70, 160, {
-                   width: doc.page.width - 140,
-                   align: 'center'
-               });
-
-            // Ticket details box
-            const detailsY = 220;
-            const boxHeight = 280;
-            
-            doc.rect(70, detailsY, doc.page.width - 140, boxHeight)
-               .strokeColor(ampGreen)
+            doc.rect(50, detailsY, doc.page.width - 100, boxHeight)
+               .strokeColor(borderGray)
                .lineWidth(2)
                .stroke();
 
+            // Event title inside box
+            doc.fontSize(22)
+               .fillColor(darkText)
+               .text('Amp Arena', 70, detailsY + 20, {
+                   width: doc.page.width - 140,
+                   align: 'center'
+               });
+
             // Ticket details
-            let currentY = detailsY + 30;
-            const lineHeight = 35;
+            let currentY = detailsY + 60;
+            const lineHeight = 28;
 
             const details = [
                 ['Date:', eventDate],
@@ -105,33 +108,33 @@ async function generateTicketPDF(ticketData) {
             ];
 
             details.forEach(([label, value]) => {
-                doc.fontSize(14)
-                   .fillColor(ampGreen)
-                   .text(label, 90, currentY, { width: 120 });
+                doc.fontSize(13)
+                   .fillColor('#666666')
+                   .text(label, 70, currentY, { width: 120 });
                 
-                doc.fillColor(white)
-                   .text(value, 220, currentY, { width: 280 });
+                doc.fillColor(darkText)
+                   .text(value, 200, currentY, { width: 300 });
                 
                 currentY += lineHeight;
             });
 
             // Ticket code (prominent)
-            currentY += 20;
-            doc.rect(90, currentY - 10, doc.page.width - 180, 50)
-               .fill('rgba(0, 255, 136, 0.1)')
-               .strokeColor(ampGreen)
+            currentY += 15;
+            doc.rect(70, currentY - 5, doc.page.width - 140, 40)
+               .fill(lightGray)
+               .strokeColor(borderGray)
                .lineWidth(1)
                .stroke();
 
-            doc.fontSize(18)
-               .fillColor(ampGreen)
-               .text('TICKET CODE:', 90, currentY + 5);
+            doc.fontSize(16)
+               .fillColor('#666666')
+               .text('TICKET CODE:', 70, currentY + 8);
 
-            doc.fontSize(20)
+            doc.fontSize(18)
                .font('Courier')
-               .fillColor(white)
-               .text(ticketCode, 220, currentY + 5, {
-                   width: 250,
+               .fillColor(darkText)
+               .text(ticketCode, 200, currentY + 8, {
+                   width: 280,
                    letterSpacing: 2
                });
 
@@ -150,24 +153,27 @@ async function generateTicketPDF(ticketData) {
                 const qrBase64 = qrCodeDataURL.split(',')[1];
                 const qrBuffer = Buffer.from(qrBase64, 'base64');
 
-                // Add QR code to PDF
-                const qrSize = 120;
-                const qrX = doc.page.width - 150;
-                const qrY = detailsY + 150;
+                // Add QR code to PDF - smaller and repositioned
+                const qrSize = 100;
+                const qrX = doc.page.width - 140;
+                const qrY = detailsY + 200;
 
                 // White background for QR code
-                doc.rect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20)
-                   .fill(white);
+                doc.rect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10)
+                   .fill(white)
+                   .strokeColor(borderGray)
+                   .lineWidth(1)
+                   .stroke();
 
                 doc.image(qrBuffer, qrX, qrY, {
                     width: qrSize,
                     height: qrSize
                 });
 
-                doc.fontSize(12)
-                   .fillColor(white)
-                   .text('Scan at venue', qrX - 5, qrY + qrSize + 15, {
-                       width: qrSize + 10,
+                doc.fontSize(11)
+                   .fillColor('#666666')
+                   .text('Scan at venue', qrX, qrY + qrSize + 8, {
+                       width: qrSize,
                        align: 'center'
                    });
 
@@ -175,50 +181,44 @@ async function generateTicketPDF(ticketData) {
                 console.error('QR code generation error:', qrError);
                 
                 // Fallback - just show text
-                doc.fontSize(12)
-                   .fillColor(white)
+                doc.fontSize(11)
+                   .fillColor('#666666')
                    .text('Present ticket code\nat venue entrance', 
-                         doc.page.width - 150, detailsY + 200, {
-                             width: 120,
+                         doc.page.width - 140, detailsY + 220, {
+                             width: 100,
                              align: 'center'
                          });
             }
 
-            // Important notes
-            const notesY = detailsY + boxHeight + 30;
+            // Important notes - compact
+            const notesY = detailsY + boxHeight + 20;
             
-            doc.fontSize(16)
-               .fillColor(ampGreen)
-               .text('Important Information:', 70, notesY);
+            doc.fontSize(14)
+               .fillColor(darkText)
+               .text('Important Information:', 50, notesY);
 
+            doc.fontSize(10)
+               .fillColor('#666666')
+               .text('• Arrive early - doors open 30 minutes before start time', 50, notesY + 25)
+               .text('• Bring valid ID matching your ticket registration', 50, notesY + 40)
+               .text('• This ticket is non-transferable and non-refundable', 50, notesY + 55)
+               .text('• Keep this ticket or email QR code for entry', 50, notesY + 70)
+               .text('• Event time will be updated via email', 50, notesY + 85);
+
+            // Footer - minimal
+            const footerY = doc.page.height - 60;
+            
             doc.fontSize(11)
-               .fillColor(white)
-               .text('• Arrive early - doors open 30 minutes before start time', 70, notesY + 30)
-               .text('• Bring valid ID matching your ticket registration', 70, notesY + 50)
-               .text('• This ticket is non-transferable and non-refundable', 70, notesY + 70)
-               .text('• Keep this ticket or email QR code for entry', 70, notesY + 90)
-               .text('• Event time will be updated via email', 70, notesY + 110);
-
-            // Footer
-            const footerY = doc.page.height - 80;
-            doc.rect(0, footerY, doc.page.width, 80)
-               .fill(darkBg);
-
-            doc.fontSize(12)
-               .fillColor('#888888')
-               .text('Amp Arena - Where Code Meets Competition', 70, footerY + 20, {
-                   width: doc.page.width - 140,
+               .fillColor('#666666')
+               .text('Amp Arena - Where Code Meets Competition', 50, footerY, {
+                   width: doc.page.width - 100,
                    align: 'center'
                });
 
-            doc.text('Questions? Contact tickets@amparena.com', 70, footerY + 40, {
-                width: doc.page.width - 140,
-                align: 'center'
-            });
-
             doc.fontSize(10)
-               .text('© 2025 Amp Arena. All rights reserved.', 70, footerY + 60, {
-                   width: doc.page.width - 140,
+               .fillColor('#999999')
+               .text('Questions? Contact tickets@amparena.com | © 2025 Amp Arena', 50, footerY + 20, {
+                   width: doc.page.width - 100,
                    align: 'center'
                });
 
