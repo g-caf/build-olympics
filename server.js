@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const fs = require('fs');
+const { sendTicketRetrievalEmail, processTicketPurchase } = require('./ticket-system');
 require('dotenv').config();
 
 const app = express();
@@ -113,6 +114,20 @@ const db = new sqlite3.Database('./signups.db', (err) => {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
+        
+        // Create tickets table if it doesn't exist
+        db.run(`
+            CREATE TABLE IF NOT EXISTS tickets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                ticket_type TEXT NOT NULL DEFAULT 'general_admission',
+                price INTEGER NOT NULL DEFAULT 2000,
+                stripe_payment_intent_id TEXT,
+                status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'confirmed', 'cancelled')),
+                ticket_code TEXT UNIQUE NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
     }
 });
 
@@ -130,6 +145,28 @@ const authenticateCompetitorAdmin = (req, res, next) => {
     }
     
     next();
+};
+
+// General admin authentication middleware
+const authenticateAdmin = (req, res, next) => {
+    const adminKey = req.headers['admin-key'];
+    const expectedKey = process.env.ADMIN_KEY || 'build-olympics-admin-2025';
+    
+    if (!adminKey || adminKey !== expectedKey) {
+        return res.status(401).json({ error: 'Unauthorized - Invalid admin key' });
+    }
+    
+    next();
+};
+
+// Generate unique ticket code
+const generateTicketCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
 };
 
 // Routes
@@ -166,6 +203,10 @@ app.get('/attend', (req, res) => {
 
 app.get('/terms', (req, res) => {
     res.sendFile(path.join(__dirname, 'terms.html'));
+});
+
+app.get('/tickets/retrieve', (req, res) => {
+    res.sendFile(path.join(__dirname, 'ticket-retrieval-page.html'));
 });
 
 // Handle SPA routing fallback - send index for any unmatched routes
@@ -432,6 +473,230 @@ app.post('/api/competitors/:id/upload', upload.array('files', 5), (req, res) => 
     });
 });
 
+// =================================
+// TICKET API ENDPOINTS
+// =================================
+
+// POST /api/tickets/purchase - Initiate Stripe payment intent
+app.post('/api/tickets/purchase', async (req, res) => {
+    const { email } = req.body;
+    
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email address required' });
+    }
+    
+    try {
+        // Note: Stripe integration would be here
+        // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        // const paymentIntent = await stripe.paymentIntents.create({
+        //     amount: 2000, // $20.00 in cents
+        //     currency: 'usd',
+        //     metadata: {
+        //         email: email,
+        //         event: 'Build Olympics 2025'
+        //     }
+        // });
+        
+        // For now, return a placeholder response
+        res.json({
+            success: true,
+            message: 'Stripe integration required - payment intent would be created here',
+            // client_secret: paymentIntent.client_secret,
+            // payment_intent_id: paymentIntent.id
+            client_secret: 'pi_placeholder_client_secret',
+            payment_intent_id: 'pi_placeholder_' + Date.now()
+        });
+    } catch (error) {
+        console.error('Payment intent creation error:', error);
+        res.status(500).json({ error: 'Failed to create payment intent' });
+    }
+});
+
+// POST /api/tickets/confirm - Confirm payment and create ticket record
+app.post('/api/tickets/confirm', async (req, res) => {
+    const { email, stripe_payment_intent_id } = req.body;
+    
+    if (!email || !stripe_payment_intent_id) {
+        return res.status(400).json({ error: 'Email and payment intent ID required' });
+    }
+    
+    if (!email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email address required' });
+    }
+    
+    try {
+        // Note: Stripe payment verification would be here
+        // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        // const paymentIntent = await stripe.paymentIntents.retrieve(stripe_payment_intent_id);
+        // 
+        // if (paymentIntent.status !== 'succeeded') {
+        //     return res.status(400).json({ error: 'Payment not completed' });
+        // }
+        
+        // Generate unique ticket code
+        let ticketCode;
+        let isUnique = false;
+        
+        while (!isUnique) {
+            ticketCode = generateTicketCode();
+            
+            // Check if code already exists
+            const existingTicket = await new Promise((resolve, reject) => {
+                db.get('SELECT id FROM tickets WHERE ticket_code = ?', [ticketCode], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            
+            if (!existingTicket) {
+                isUnique = true;
+            }
+        }
+        
+        // Create ticket record
+        db.run(
+            `INSERT INTO tickets (email, ticket_type, price, stripe_payment_intent_id, status, ticket_code) 
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [email, 'general_admission', 2000, stripe_payment_intent_id, 'confirmed', ticketCode],
+            function(err) {
+                if (err) {
+                    console.error('Database error:', err);
+                    return res.status(500).json({ error: 'Failed to create ticket record' });
+                }
+                
+                console.log(`New ticket created: ${email} (ID: ${this.lastID}, Code: ${ticketCode})`);
+                
+                // Send confirmation email if configured
+                if (transporter && process.env.EMAIL_USER) {
+                    const mailOptions = {
+                        from: process.env.EMAIL_USER,
+                        to: email,
+                        subject: 'Build Olympics 2025 - Ticket Confirmation',
+                        html: `
+                            <h2>Build Olympics 2025 - Ticket Confirmed!</h2>
+                            <p>Thank you for your purchase!</p>
+                            <p><strong>Event:</strong> Build Olympics 2025</p>
+                            <p><strong>Date:</strong> October 29th, 2025</p>
+                            <p><strong>Venue:</strong> The Midway SF</p>
+                            <p><strong>Ticket Type:</strong> General Admission</p>
+                            <p><strong>Ticket Code:</strong> ${ticketCode}</p>
+                            <p><strong>Email:</strong> ${email}</p>
+                            <hr>
+                            <p>Please save this email and bring your ticket code to the event.</p>
+                            <p>We're excited to see you there!</p>
+                        `
+                    };
+                    
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            console.error('Ticket confirmation email failed:', error);
+                        } else {
+                            console.log('Ticket confirmation email sent:', info.response);
+                        }
+                    });
+                }
+                
+                res.json({ 
+                    success: true,
+                    message: 'Ticket confirmed successfully!', 
+                    ticket: {
+                        id: this.lastID,
+                        email: email,
+                        ticket_code: ticketCode,
+                        ticket_type: 'general_admission',
+                        price: 2000,
+                        status: 'confirmed'
+                    }
+                });
+            }
+        );
+    } catch (error) {
+        console.error('Ticket confirmation error:', error);
+        res.status(500).json({ error: 'Failed to confirm ticket' });
+    }
+});
+
+// GET /api/tickets/:email - Get tickets for email address
+app.get('/api/tickets/:email', (req, res) => {
+    const { email } = req.params;
+    
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email address required' });
+    }
+    
+    db.all(
+        'SELECT id, email, ticket_type, price, status, ticket_code, created_at FROM tickets WHERE email = ? ORDER BY created_at DESC',
+        [email],
+        (err, rows) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            
+            res.json({ tickets: rows });
+        }
+    );
+});
+
+// GET /api/tickets - List all tickets (admin only)
+app.get('/api/tickets', authenticateAdmin, (req, res) => {
+    const { status, limit = 50, offset = 0 } = req.query;
+    
+    let query = 'SELECT * FROM tickets';
+    let params = [];
+    
+    if (status) {
+        query += ' WHERE status = ?';
+        params.push(status);
+    }
+    
+    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    params.push(parseInt(limit), parseInt(offset));
+    
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        res.json({ tickets: rows });
+    });
+});
+
+// POST /api/stripe/webhook - Stripe webhook endpoint
+app.post('/api/stripe/webhook', express.raw({type: 'application/json'}), (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    
+    // Note: Stripe webhook verification would be here
+    // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    // const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    try {
+        // const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        
+        // Handle the event
+        // switch (event.type) {
+        //     case 'payment_intent.succeeded':
+        //         const paymentIntent = event.data.object;
+        //         console.log('PaymentIntent was successful!');
+        //         // Auto-confirm ticket here if needed
+        //         break;
+        //     default:
+        //         console.log(`Unhandled event type ${event.type}`);
+        // }
+        
+        console.log('Stripe webhook received (placeholder)');
+        res.json({received: true});
+    } catch (err) {
+        console.error('Webhook signature verification failed:', err);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+});
+
+// =================================
+// SIGNUP API ENDPOINTS
+// =================================
+
 // API endpoint to handle email signups
 app.post('/api/signup', (req, res) => {
     const { email } = req.body;
@@ -527,6 +792,143 @@ app.post('/api/admin-auth', (req, res) => {
     res.json({ 
         adminKey: process.env.ADMIN_KEY || 'build-olympics-admin-2025',
         message: 'Attendee dashboard authentication successful' 
+    });
+});
+
+// =================================
+// TICKET EMAIL ENDPOINTS
+// =================================
+
+// POST /api/tickets/purchase - Process ticket purchase after payment
+app.post('/api/tickets/purchase', async (req, res) => {
+    const { email, paymentIntentId, ticketType, price } = req.body;
+    
+    if (!email || !paymentIntentId) {
+        return res.status(400).json({ error: 'Email and payment intent ID are required' });
+    }
+    
+    if (!transporter) {
+        return res.status(500).json({ error: 'Email service not configured' });
+    }
+    
+    try {
+        const result = await processTicketPurchase(db, transporter, {
+            email,
+            paymentIntentId,
+            ticketType,
+            price
+        });
+        
+        res.json({
+            success: true,
+            ticketCode: result.ticketCode,
+            emailSent: result.emailSent,
+            message: 'Ticket purchased successfully!'
+        });
+        
+    } catch (error) {
+        console.error('Ticket purchase error:', error);
+        res.status(500).json({ 
+            error: 'Failed to process ticket purchase',
+            details: error.message
+        });
+    }
+});
+
+// POST /api/tickets/retrieve - Retrieve and resend tickets to email
+app.post('/api/tickets/retrieve', async (req, res) => {
+    const { email } = req.body;
+    
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email address required' });
+    }
+    
+    if (!transporter) {
+        return res.status(500).json({ error: 'Email service not configured' });
+    }
+    
+    // Find tickets for this email
+    db.all(
+        'SELECT * FROM tickets WHERE email = ? AND status = "confirmed" ORDER BY created_at DESC',
+        [email],
+        async (err, rows) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            
+            if (!rows || rows.length === 0) {
+                return res.status(404).json({ error: 'No confirmed tickets found for this email address' });
+            }
+            
+            try {
+                // Send retrieval email with all tickets
+                const emailResult = await sendTicketRetrievalEmail(transporter, email, rows);
+                
+                if (emailResult.success) {
+                    res.json({
+                        success: true,
+                        ticketCount: rows.length,
+                        message: 'Tickets sent to your email successfully!'
+                    });
+                } else {
+                    res.status(500).json({
+                        error: 'Failed to send tickets email',
+                        details: emailResult.error
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Ticket retrieval error:', error);
+                res.status(500).json({ 
+                    error: 'Failed to retrieve tickets',
+                    details: error.message
+                });
+            }
+        }
+    );
+});
+
+// GET /api/tickets - List all tickets (admin auth required)
+app.get('/api/tickets', (req, res) => {
+    const adminKey = req.headers['admin-key'];
+    const expectedKey = process.env.ADMIN_KEY || 'build-olympics-admin-2025';
+    
+    if (!adminKey || adminKey !== expectedKey) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const { status, limit = 50, offset = 0 } = req.query;
+    
+    let query = 'SELECT * FROM tickets';
+    let params = [];
+    
+    if (status) {
+        query += ' WHERE status = ?';
+        params.push(status);
+    }
+    
+    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    params.push(parseInt(limit), parseInt(offset));
+    
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        res.json(rows);
+    });
+});
+
+// GET /api/tickets/count - Get ticket count
+app.get('/api/tickets/count', (req, res) => {
+    db.get('SELECT COUNT(*) as count FROM tickets WHERE status = "confirmed"', (err, row) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.json({ count: row.count });
     });
 });
 

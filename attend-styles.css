@@ -57,7 +57,141 @@ header {
 }
 
 .event-details-section {
+    margin-bottom: 3rem;
+}
+
+/* Ticket Selection Styles */
+.ticket-selection-section {
     margin-bottom: 4rem;
+}
+
+.ticket-card {
+    padding: 2rem 0;
+    border-top: 2px solid #e0e0e0;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.ticket-card h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #1a1a1a;
+}
+
+.ticket-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 2rem;
+}
+
+.ticket-info h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+
+.ticket-description {
+    color: #666666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.ticket-price {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    display: block;
+    line-height: 1.2;
+}
+
+.price-label {
+    font-size: 0.9rem;
+    color: #666666;
+    font-weight: 400;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.quantity-selector label {
+    font-weight: 600;
+    color: #1a1a1a;
+    min-width: 80px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.quantity-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.quantity-btn:hover {
+    background: #f8f8f8;
+}
+
+.quantity-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.quantity-controls input {
+    border: none;
+    background: none;
+    text-align: center;
+    width: 60px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    padding: 0.75rem 0;
+}
+
+.total-section {
+    border-top: 2px solid #e0e0e0;
+    padding-top: 1.5rem;
+}
+
+.total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.total-final {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #1a1a1a;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
 }
 
 .event-info-card {
@@ -138,6 +272,80 @@ header {
     border-color: #1a1a1a;
 }
 
+.field-note {
+    display: block;
+    font-size: 0.85rem;
+    color: #666666;
+    margin-top: 0.5rem;
+    line-height: 1.3;
+}
+
+/* Payment Section Styles */
+.payment-section {
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-top: 2px solid #e0e0e0;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.payment-section h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+}
+
+.stripe-element-wrapper {
+    margin-bottom: 1rem;
+}
+
+.stripe-element {
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: border-color 0.2s ease;
+}
+
+.stripe-element:focus-within {
+    border-color: #1a1a1a;
+}
+
+.payment-errors {
+    color: #d73a49;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    min-height: 20px;
+}
+
+/* Button Loading States */
+.submit-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-button:disabled {
+    background: #999999;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.submit-button .button-spinner {
+    display: none;
+}
+
+.submit-button.loading .button-text {
+    visibility: hidden;
+}
+
+.submit-button.loading .button-spinner {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .checkbox-group {
     margin: 2rem 0;
 }
@@ -197,6 +405,106 @@ header {
     border: 2px solid #e0c0c0;
     color: #5a2d2d;
     opacity: 1;
+}
+
+/* Confirmation Section Styles */
+.confirmation-section {
+    margin-bottom: 4rem;
+}
+
+.confirmation-card {
+    text-align: center;
+    padding: 3rem 2rem;
+    border: 2px solid #c0e0c0;
+    border-radius: 12px;
+    background: #f9fdf9;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #2d5a2d;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #e8f5e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.confirmation-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+}
+
+.confirmation-card>p {
+    font-size: 1.1rem;
+    color: #666666;
+    margin-bottom: 2rem;
+}
+
+.confirmation-details {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row span:first-child {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.detail-row span:last-child {
+    font-weight: 500;
+    color: #666666;
+}
+
+.confirmation-note {
+    font-size: 0.95rem;
+    color: #666666;
+    line-height: 1.5;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f8f8;
+    border-radius: 8px;
+}
+
+.secondary-button {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border: 2px solid #1a1a1a;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.secondary-button:hover {
+    background: #f8f8f8;
+    transform: translateY(-1px);
 }
 
 .what-to-expect {
@@ -259,20 +567,54 @@ footer {
     .container {
         padding: 2rem 1rem;
     }
-    
+
     .detail-item {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .detail-item .value {
         text-align: left;
     }
-    
+
+    .ticket-option {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .ticket-price {
+        text-align: left;
+    }
+
+    .quantity-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .quantity-selector label {
+        min-width: auto;
+    }
+
+    .confirmation-card {
+        padding: 2rem 1rem;
+    }
+
+    .confirmation-details {
+        padding: 1.5rem;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
     .expectation-list {
         gap: 1.5rem;
     }
-    
+
     .expectation-item {
         padding: 1.5rem 0;
     }

@@ -1,135 +1,320 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('attend-form');
-    const submitBtn = document.querySelector('.submit-btn');
-    const ticketOptions = document.querySelectorAll('input[name="ticketType"]');
+// Stripe configuration
+// Replace with your actual publishable key when ready to activate payments
+const STRIPE_PUBLIC_KEY = 'pk_test_placeholder'; // Add your Stripe publishable key here
+const TICKET_PRICE = 20; // $20 per ticket
 
-    // Update button text based on selected ticket
-    function updateButtonText() {
-        const selectedTicket = document.querySelector('input[name="ticketType"]:checked');
-        const price = selectedTicket.value === 'vip' ? '$100' : '$20';
-        const ticketType = selectedTicket.value === 'vip' ? 'VIP' : 'GENERAL';
-        submitBtn.textContent = `SECURE YOUR ${ticketType} SEAT - ${price}`;
+let stripe = null;
+let cardElement = null;
+let currentQuantity = 1;
+let isProcessing = false;
+
+// Initialize Stripe (will show placeholder message if no key provided)
+document.addEventListener('DOMContentLoaded', function () {
+    initializeStripe();
+    setupQuantityControls();
+    setupFormSubmission();
+    updateTotals();
+});
+
+function initializeStripe() {
+    if (STRIPE_PUBLIC_KEY === 'pk_test_placeholder') {
+        // Show placeholder when no Stripe key is configured
+        const cardElement = document.getElementById('card-element');
+        cardElement.innerHTML = `
+            <div style="padding: 1rem; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; color: #6c757d; text-align: center;">
+                <p><strong>Payment form will appear here</strong></p>
+                <p>Stripe integration ready - add your publishable key to activate payments</p>
+            </div>
+        `;
+        return;
     }
 
-    // Add event listeners to ticket options
-    ticketOptions.forEach(option => {
-        option.addEventListener('change', updateButtonText);
-    });
+    try {
+        stripe = Stripe(STRIPE_PUBLIC_KEY);
+        const elements = stripe.elements();
 
-    // Handle form submission
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-        
-        // Show loading state
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'PROCESSING...';
-        submitBtn.disabled = true;
+        // Create card element
+        cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#1a1a1a',
+                    fontFamily: 'Inter, sans-serif',
+                    '::placeholder': {
+                        color: '#999999',
+                    },
+                },
+                invalid: {
+                    color: '#d73a49',
+                    iconColor: '#d73a49'
+                }
+            }
+        });
 
-        try {
-            // Here you would normally send the data to your server
-            // For now, we'll simulate a successful submission
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Show success message
-            showSuccessMessage(data);
-            
-        } catch (error) {
-            // Show error message
-            showErrorMessage();
-        } finally {
-            // Reset button
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+        cardElement.mount('#card-element');
+
+        // Handle real-time validation errors from the card element
+        cardElement.on('change', function (event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+    } catch (error) {
+        console.error('Stripe initialization failed:', error);
+        showMessage('Payment system initialization failed. Please refresh the page.', 'error');
+    }
+}
+
+function setupQuantityControls() {
+    const decreaseBtn = document.getElementById('decrease-qty');
+    const increaseBtn = document.getElementById('increase-qty');
+    const quantityInput = document.getElementById('quantity');
+
+    decreaseBtn.addEventListener('click', function () {
+        if (currentQuantity > 1) {
+            currentQuantity--;
+            quantityInput.value = currentQuantity;
+            updateTotals();
+            updateButtonState();
         }
     });
 
-    function showSuccessMessage(data) {
-        const ticketType = data.ticketType === 'vip' ? 'VIP' : 'General Admission';
-        const price = data.ticketType === 'vip' ? '$100' : '$20';
-        
-        const successHtml = `
-            <div class="success-message">
-                <h3>Registration Confirmed!</h3>
-                <div class="confirmation-details">
-                    <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
-                    <p><strong>Email:</strong> ${data.email}</p>
-                    <p><strong>Ticket Type:</strong> ${ticketType}</p>
-                    <p><strong>Price:</strong> ${price}</p>
-                </div>
-                <p class="confirmation-note">
-                    You'll receive payment instructions and your digital ticket via email within 24 hours.
-                </p>
-                <button class="new-registration-btn" onclick="location.reload()">Register Another Ticket</button>
-            </div>
-        `;
-        
-        document.querySelector('.registration-form-container').innerHTML = successHtml;
-        
-        // Add success message styles
-        const style = document.createElement('style');
-        style.textContent = `
-            .success-message {
-                text-align: center;
-                padding: 3rem;
-            }
-            .success-message h3 {
-                color: #4a7c59;
-                font-size: 2rem;
-                margin-bottom: 2rem;
-                text-shadow: 0 0 15px rgba(74, 124, 89, 0.5);
-            }
-            .confirmation-details {
-                background: rgba(0, 255, 65, 0.1);
-                border: 1px solid rgba(0, 255, 65, 0.3);
-                border-radius: 15px;
-                padding: 2rem;
-                margin: 2rem 0;
-                text-align: left;
-            }
-            .confirmation-details p {
-                margin: 0.5rem 0;
-                color: #ffffff;
-            }
-            .confirmation-note {
-                color: #cccccc;
-                margin: 2rem 0;
-                line-height: 1.6;
-            }
-            .new-registration-btn {
-                background: linear-gradient(45deg, #2d5a3d, #4a7c59);
-                color: #ffffff;
-                border: 2px solid rgba(0, 255, 65, 0.5);
-                padding: 1rem 2rem;
-                border-radius: 10px;
-                font-weight: 600;
-                text-transform: uppercase;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-            .new-registration-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(0, 255, 65, 0.3);
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    function showErrorMessage() {
-        alert('There was an error processing your registration. Please try again or contact support.');
-    }
-
-    // Add some interactive effects
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.parentElement.style.transform = 'scale(1.02)';
-        });
-        
-        input.addEventListener('blur', function() {
-            this.parentElement.style.transform = 'scale(1)';
-        });
+    increaseBtn.addEventListener('click', function () {
+        if (currentQuantity < 10) {
+            currentQuantity++;
+            quantityInput.value = currentQuantity;
+            updateTotals();
+            updateButtonState();
+        }
     });
+
+    // Update button states initially
+    updateButtonState();
+}
+
+function updateButtonState() {
+    const decreaseBtn = document.getElementById('decrease-qty');
+    const increaseBtn = document.getElementById('increase-qty');
+
+    decreaseBtn.disabled = currentQuantity <= 1;
+    increaseBtn.disabled = currentQuantity >= 10;
+}
+
+function updateTotals() {
+    const subtotal = TICKET_PRICE * currentQuantity;
+    const total = subtotal; // No additional fees for now
+
+    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('button-total').textContent = `$${total.toFixed(2)}`;
+}
+
+function setupFormSubmission() {
+    const form = document.getElementById('attend-form');
+    form.addEventListener('submit', handleFormSubmission);
+}
+
+async function handleFormSubmission(event) {
+    event.preventDefault();
+
+    if (isProcessing) return;
+
+    // Basic form validation
+    const formData = getFormData();
+    if (!validateForm(formData)) {
+        return;
+    }
+
+    if (STRIPE_PUBLIC_KEY === 'pk_test_placeholder') {
+        // Demo mode - show success without actual payment
+        showDemoSuccess(formData);
+        return;
+    }
+
+    setLoadingState(true);
+
+    try {
+        // Create payment intent on server (this would be a real API call)
+        const paymentIntent = await createPaymentIntent(formData);
+
+        // Confirm payment with Stripe
+        const { error, paymentIntent: confirmedPaymentIntent } = await stripe.confirmCardPayment(
+            paymentIntent.client_secret,
+            {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: formData.fullName,
+                        email: formData.email,
+                    }
+                }
+            }
+        );
+
+        if (error) {
+            console.error('Payment failed:', error);
+            showMessage(error.message, 'error');
+        } else {
+            // Payment successful
+            await saveTicketPurchase(formData, confirmedPaymentIntent);
+            showSuccessConfirmation(formData, confirmedPaymentIntent);
+        }
+    } catch (error) {
+        console.error('Payment processing error:', error);
+        showMessage('Payment processing failed. Please try again.', 'error');
+    }
+
+    setLoadingState(false);
+}
+
+function getFormData() {
+    return {
+        fullName: document.getElementById('full-name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        company: document.getElementById('company').value.trim(),
+        quantity: currentQuantity,
+        total: TICKET_PRICE * currentQuantity,
+        updates: document.getElementById('updates').checked
+    };
+}
+
+function validateForm(formData) {
+    // Clear previous errors
+    showMessage('', '');
+
+    if (!formData.fullName) {
+        showMessage('Please enter your full name.', 'error');
+        document.getElementById('full-name').focus();
+        return false;
+    }
+
+    if (!formData.email || !isValidEmail(formData.email)) {
+        showMessage('Please enter a valid email address.', 'error');
+        document.getElementById('email').focus();
+        return false;
+    }
+
+    return true;
+}
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Mock function - replace with actual API call
+async function createPaymentIntent(formData) {
+    // This would be replaced with an actual API call to your server
+    // Your server would create a PaymentIntent using Stripe's server-side SDK
+
+    // Simulated API response
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    return {
+        id: 'pi_' + Math.random().toString(36).substr(2, 24),
+        client_secret: 'pi_test_client_secret',
+        amount: formData.total * 100, // Convert to cents
+        currency: 'usd'
+    };
+}
+
+// Mock function - replace with actual API call to save ticket purchase
+async function saveTicketPurchase(formData, paymentIntent) {
+    // This would save the ticket purchase to your database
+    // and send confirmation email
+
+    const ticketData = {
+        ...formData,
+        paymentId: paymentIntent.id,
+        orderId: 'AMP-' + Date.now(),
+        purchaseDate: new Date().toISOString(),
+        eventDate: '2025-10-29',
+        eventTime: '7:00 PM - 11:00 PM PST',
+        venue: 'The Midway SF',
+        address: '900 Marin St, San Francisco, CA 94124'
+    };
+
+    // Simulated API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    console.log('Ticket purchase saved:', ticketData);
+    return ticketData;
+}
+
+function showDemoSuccess(formData) {
+    // Show demo success for testing without Stripe keys
+    const orderId = 'DEMO-' + Date.now();
+    showSuccessConfirmation(formData, {
+        id: 'demo_payment_id',
+        status: 'succeeded'
+    }, orderId);
+}
+
+function showSuccessConfirmation(formData, paymentIntent, orderId = null) {
+    // Hide form and show confirmation
+    document.getElementById('attend-form').style.display = 'none';
+    document.querySelector('.ticket-selection-section').style.display = 'none';
+
+    const confirmationSection = document.getElementById('confirmation-section');
+    confirmationSection.style.display = 'block';
+
+    // Update confirmation details
+    document.getElementById('order-id').textContent = orderId || paymentIntent.id || 'N/A';
+    document.getElementById('confirmed-quantity').textContent = formData.quantity;
+    document.getElementById('confirmed-total').textContent = `$${formData.total.toFixed(2)}`;
+    document.getElementById('confirmed-email').textContent = formData.email;
+
+    // Scroll to confirmation
+    confirmationSection.scrollIntoView({ behavior: 'smooth' });
+
+    // Show success message
+    showMessage('Purchase completed successfully!', 'success');
+}
+
+function setLoadingState(loading) {
+    isProcessing = loading;
+    const submitButton = document.getElementById('purchase-button');
+    const buttonText = submitButton.querySelector('.button-text');
+    const buttonSpinner = submitButton.querySelector('.button-spinner');
+
+    if (loading) {
+        submitButton.disabled = true;
+        submitButton.classList.add('loading');
+        buttonSpinner.style.display = 'block';
+        buttonText.style.visibility = 'hidden';
+    } else {
+        submitButton.disabled = false;
+        submitButton.classList.remove('loading');
+        buttonSpinner.style.display = 'none';
+        buttonText.style.visibility = 'visible';
+    }
+}
+
+function showMessage(message, type) {
+    const messageElement = document.getElementById('form-message');
+    messageElement.textContent = message;
+    messageElement.className = 'form-message';
+
+    if (type) {
+        messageElement.classList.add(type);
+    }
+}
+
+// Utility function to format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(amount);
+}
+
+// Handle browser back button to reset form if needed
+window.addEventListener('popstate', function () {
+    const confirmationSection = document.getElementById('confirmation-section');
+    if (confirmationSection.style.display !== 'none') {
+        location.reload(); // Simple reset - could be more sophisticated
+    }
 });

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register to Attend - Amp Arena</title>
     <link rel="icon" type="image/png" href="Style=white.png">
     <link rel="stylesheet" href="attend-styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -38,30 +41,72 @@
                 </div>
             </section>
 
+            <section class="ticket-selection-section">
+                <div class="ticket-card">
+                    <h2>Ticket Selection</h2>
+                    <div class="ticket-option">
+                        <div class="ticket-info">
+                            <h3>General Admission</h3>
+                            <p class="ticket-description">Access to the event, networking, food & drinks</p>
+                        </div>
+                        <div class="ticket-price">
+                            <span class="price">$20</span>
+                            <span class="price-label">per ticket</span>
+                        </div>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <label for="quantity">Quantity:</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" id="decrease-qty">-</button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10" readonly>
+                            <button type="button" class="quantity-btn" id="increase-qty">+</button>
+                        </div>
+                    </div>
+
+                    <div class="total-section">
+                        <div class="total-line">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$20.00</span>
+                        </div>
+                        <div class="total-line total-final">
+                            <span>Total:</span>
+                            <span id="total">$20.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section class="registration-form-section">
                 <form class="attend-form" id="attend-form">
-                    <h2>Get Your Tickets</h2>
-                    
+                    <h2>Purchase Tickets</h2>
+
                     <div class="form-group">
                         <label for="full-name">Full Name</label>
                         <input type="text" id="full-name" name="fullName" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" required>
+                        <small class="field-note">Ticket confirmation will be sent to this email</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="company">Company/Organization (Optional)</label>
                         <input type="text" id="company" name="company">
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="role">Role/Title (Optional)</label>
-                        <input type="text" id="role" name="role">
+
+                    <div class="payment-section">
+                        <h3>Payment Information</h3>
+                        <div class="stripe-element-wrapper">
+                            <div id="card-element" class="stripe-element">
+                                <!-- Stripe Elements will create form elements here -->
+                            </div>
+                            <div id="card-errors" class="payment-errors"></div>
+                        </div>
                     </div>
-                    
+
                     <div class="form-group checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" id="updates" name="updates">
@@ -69,11 +114,48 @@
                             Send me updates about Amp Arena
                         </label>
                     </div>
-                    
-                    <button type="submit" class="submit-button">Reserve My Spot</button>
-                    
+
+                    <button type="submit" class="submit-button" id="purchase-button">
+                        <span class="button-text">Purchase Tickets - <span id="button-total">$20.00</span></span>
+                        <span class="button-spinner" style="display: none;">Processing...</span>
+                    </button>
+
                     <div id="form-message" class="form-message"></div>
                 </form>
+            </section>
+
+            <section class="confirmation-section" id="confirmation-section" style="display: none;">
+                <div class="confirmation-card">
+                    <div class="success-icon">✓</div>
+                    <h2>Payment Successful!</h2>
+                    <p>Your tickets have been purchased successfully.</p>
+
+                    <div class="confirmation-details">
+                        <div class="detail-row">
+                            <span>Order ID:</span>
+                            <span id="order-id">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Quantity:</span>
+                            <span id="confirmed-quantity">1</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Total Paid:</span>
+                            <span id="confirmed-total">$20.00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Email:</span>
+                            <span id="confirmed-email">-</span>
+                        </div>
+                    </div>
+
+                    <p class="confirmation-note">
+                        A confirmation email with your ticket details has been sent to your email address.
+                        Please bring a valid ID to the event.
+                    </p>
+
+                    <button type="button" class="secondary-button" onclick="window.print()">Print Confirmation</button>
+                </div>
             </section>
 
             <section class="what-to-expect">
@@ -107,4 +189,5 @@
 
     <script src="attend-script.js"></script>
 </body>
+
 </html>
