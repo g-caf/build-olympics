@@ -20,9 +20,9 @@ function generateTicketEmailTemplate(ticketData) {
     const calendarLinks = generateCalendarLinks(ticketData);
     const calendarHTML = generateCalendarInviteHTML(calendarLinks);
 
-    const ampLogoPath = path.join(__dirname, 'Amp_mark_white.webp');
+    const ampLogoPath = path.join(__dirname, 'Amp_mark_outline.webp');
     let ampLogoBase64 = '';
-    
+
     try {
         if (fs.existsSync(ampLogoPath)) {
             const logoBuffer = fs.readFileSync(ampLogoPath);
@@ -40,6 +40,8 @@ function generateTicketEmailTemplate(ticketData) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Amp Arena Ticket</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -47,25 +49,27 @@ function generateTicketEmailTemplate(ticketData) {
         }
         
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #0a0a0a;
-            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            color: #1a1a1a;
             line-height: 1.6;
         }
         
         .email-container {
             max-width: 600px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: #ffffff;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
         }
         
         .header {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            background: #ffffff;
             padding: 30px 20px;
             text-align: center;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .logo {
@@ -75,29 +79,31 @@ function generateTicketEmailTemplate(ticketData) {
         }
         
         .header h1 {
-            color: #000;
+            color: #1a1a1a;
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 800;
             margin-bottom: 10px;
         }
         
         .header p {
-            color: #000;
+            color: #666666;
             font-size: 16px;
         }
         
         .content {
             padding: 40px 30px;
+            background: #ffffff;
         }
         
         .greeting {
             font-size: 18px;
             margin-bottom: 25px;
+            color: #1a1a1a;
         }
         
         .ticket-info {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             padding: 25px;
             margin: 25px 0;
@@ -109,7 +115,7 @@ function generateTicketEmailTemplate(ticketData) {
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .ticket-row:last-child {
@@ -119,29 +125,32 @@ function generateTicketEmailTemplate(ticketData) {
         }
         
         .ticket-label {
-            font-weight: bold;
-            color: #00ff88;
+            font-weight: 600;
+            color: #1a1a1a;
         }
         
         .ticket-value {
-            color: #ffffff;
+            color: #1a1a1a;
         }
         
         .ticket-code {
             font-family: 'Courier New', monospace;
             font-size: 20px;
-            background: rgba(0, 0, 0, 0.3);
+            background: #f5f5f5;
             padding: 10px 15px;
             border-radius: 4px;
             letter-spacing: 2px;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
         }
         
         .qr-section {
             text-align: center;
             margin: 30px 0;
             padding: 25px;
-            background: rgba(255, 255, 255, 0.05);
+            background: #f9f9f9;
             border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
         
         .qr-code {
@@ -151,41 +160,45 @@ function generateTicketEmailTemplate(ticketData) {
             background: white;
             padding: 10px;
             border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
         
         .important-info {
-            background: rgba(255, 193, 7, 0.1);
-            border-left: 4px solid #ffc107;
+            background: #f9f9f9;
+            border-left: 4px solid #1a1a1a;
             padding: 20px;
             margin: 25px 0;
+            border-radius: 0 8px 8px 0;
         }
         
         .important-info h3 {
-            color: #ffc107;
+            color: #1a1a1a;
             margin-bottom: 10px;
+            font-weight: 600;
         }
         
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-            color: #000;
+            background: #1a1a1a;
+            color: #ffffff;
             padding: 15px 30px;
             text-decoration: none;
             border-radius: 8px;
-            font-weight: bold;
+            font-weight: 600;
             margin: 20px 0;
             text-align: center;
+            transition: all 0.2s ease;
         }
         
         .footer {
-            background: #0a0a0a;
+            background: #f9f9f9;
             padding: 30px;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid #e0e0e0;
         }
         
         .footer p {
-            color: #888;
+            color: #666666;
             font-size: 14px;
             margin-bottom: 10px;
         }
@@ -304,9 +317,9 @@ function generateTicketRetrievalTemplate(ticketData) {
         requestTime = new Date().toLocaleString()
     } = ticketData;
 
-    const ampLogoPath = path.join(__dirname, 'Amp_mark_white.webp');
+    const ampLogoPath = path.join(__dirname, 'Amp_mark_outline.webp');
     let ampLogoBase64 = '';
-    
+
     try {
         if (fs.existsSync(ampLogoPath)) {
             const logoBuffer = fs.readFileSync(ampLogoPath);
@@ -333,6 +346,8 @@ function generateTicketRetrievalTemplate(ticketData) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Amp Arena Tickets</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -340,25 +355,27 @@ function generateTicketRetrievalTemplate(ticketData) {
         }
         
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #0a0a0a;
-            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f5f5;
+            color: #1a1a1a;
             line-height: 1.6;
         }
         
         .email-container {
             max-width: 600px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: #ffffff;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
         }
         
         .header {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            background: #ffffff;
             padding: 30px 20px;
             text-align: center;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .logo {
@@ -368,40 +385,58 @@ function generateTicketRetrievalTemplate(ticketData) {
         }
         
         .header h1 {
-            color: #000;
+            color: #1a1a1a;
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 800;
             margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666666;
+            font-size: 16px;
         }
         
         .content {
             padding: 40px 30px;
+            background: #ffffff;
+        }
+        
+        .content h2 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
         
         .ticket-item {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
         }
         
         .ticket-item h4 {
-            color: #00ff88;
+            color: #1a1a1a;
             margin-bottom: 10px;
             font-family: 'Courier New', monospace;
             font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .ticket-item p {
+            color: #1a1a1a;
+            margin-bottom: 5px;
         }
         
         .footer {
-            background: #0a0a0a;
+            background: #f9f9f9;
             padding: 30px;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid #e0e0e0;
         }
         
         .footer p {
-            color: #888;
+            color: #666666;
             font-size: 14px;
             margin-bottom: 10px;
         }

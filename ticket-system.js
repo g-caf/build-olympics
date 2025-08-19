@@ -60,7 +60,7 @@ async function sendTicketEmail(transporter, ticketData) {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: '🎫 Your Amp Arena Ticket - Ready for October 29th!',
+            subject: 'Your Amp Arena Ticket - Ready for October 29th!',
             html: emailHTML,
             attachments: [
                 {
@@ -140,7 +140,7 @@ async function sendTicketRetrievalEmail(transporter, email, tickets) {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: '🎫 Your Amp Arena Tickets Retrieved',
+            subject: 'Your Amp Arena Tickets Retrieved',
             html: emailHTML,
             attachments
         };
